@@ -1,14 +1,12 @@
-import 'package:crm_demo/screens/appFlow/menu/clients/model/company_list_model.dart';
-import 'package:crm_demo/screens/appFlow/menu/sales/product/content/custom_dropdown.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:crm_demo/api_service/connectivity/no_internet_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/add_client/add_client_provider.dart';
+import 'package:crm_demo/screens/appFlow/menu/clients/model/company_list_model.dart';
+import 'package:crm_demo/screens/appFlow/menu/sales/product/content/custom_dropdown.dart';
 import 'package:crm_demo/screens/custom_widgets/add_client_textfield.dart';
 import 'package:crm_demo/screens/custom_widgets/label_text.dart';
-import 'package:crm_demo/utils/res.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class AddClientScreen extends StatelessWidget {
@@ -19,23 +17,31 @@ class AddClientScreen extends StatelessWidget {
     return NoInternetScreen(
       child: ChangeNotifierProvider(
         create: (context) => AddClientProvider(),
-        child: Consumer<AddClientProvider>(builder: (context, provider, _) {
-          return Scaffold(
+        child: Consumer<AddClientProvider>(
+          builder: (context, provider, _) {
+            return Scaffold(
               resizeToAvoidBottomInset: true,
-            backgroundColor: const Color(0xffF5F6FA),
-            appBar: AppBar(
-              elevation: 0,
-              title: Text(
-                "add_client",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
-              ).tr(),
-            ),
-            body: Form(
-              key: formKey,
-              child: ListView(
-                padding: EdgeInsets.symmetric(vertical: 28.h, horizontal: 16.w),
-                children: [
-                  /*InkWell(
+              backgroundColor: const Color(0xffF5F6FA),
+              appBar: AppBar(
+                elevation: 0,
+                title:
+                    Text(
+                      "add_client",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.sp,
+                      ),
+                    ).tr(),
+              ),
+              body: Form(
+                key: formKey,
+                child: ListView(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 28.h,
+                    horizontal: 16.w,
+                  ),
+                  children: [
+                    /*InkWell(
                     onTap: () => provider.pickImage(context),
                     child: Center(
                       child: Stack(
@@ -98,76 +104,54 @@ class AddClientScreen extends StatelessWidget {
                       ),
                     ),
                   ),*/
-                  CustomDropdown<CompanyData>(
-                    value: provider.companyData,
-                    labelText: 'Select your attendance shit ',
-                    items: provider.companyListModel.data ?? [],
-                    onChanged: (CompanyData? newValue) {
-                      provider.selectCompany(newValue!);
-                    },
-                    itemLabelBuilder: (CompanyData value) => value.companyName ?? '',
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  const LavelText(
-                    text: "Client's Name * ",
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  AddClientTextField(
+                    const LavelText(text: "Company * "),
+                    SizedBox(height: 10.h),
+                    CustomDropdown<CompanyData>(
+                      value: provider.companyData,
+                      labelText: 'Select your attendance shit ',
+                      items: provider.companyListModel.data ?? [],
+                      onChanged: (CompanyData? newValue) {
+                        provider.selectCompany(newValue!);
+                      },
+                      itemLabelBuilder:
+                          (CompanyData value) => value.companyName ?? '',
+                    ),
+                    SizedBox(height: 10.h),
+                    const LavelText(text: "Client's Name * "),
+                    SizedBox(height: 10.h),
+                    AddClientTextField(
                       hintText: "Enter Client's Name".tr(),
-                      textController: provider.clientNameController),
-                  SizedBox(
-                    height: 16.h,
-                  ),
-                  const LavelText(
-                    text: "Phone Number * ",
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  AddClientTextField(
+                      textController: provider.clientNameController,
+                    ),
+                    SizedBox(height: 16.h),
+                    const LavelText(text: "Phone Number * "),
+                    SizedBox(height: 10.h),
+                    AddClientTextField(
                       hintText: "Enter Client's Phone Number".tr(),
-                      textController: provider.clientPhoneNumberController),
-                  SizedBox(
-                    height: 16.h,
-                  ),
-                  const LavelText(
-                    text: "Email * ",
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  AddClientTextField(
+                      textController: provider.clientPhoneNumberController,
+                    ),
+                    SizedBox(height: 16.h),
+                    const LavelText(text: "Email * "),
+                    SizedBox(height: 10.h),
+                    AddClientTextField(
                       hintText: "Enter Client's Email".tr(),
-                      textController: provider.clientEmailController),
-                  SizedBox(
-                    height: 16.h,
-                  ),
-                  const LavelText(
-                    text: "Password * ",
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  AddClientTextField(
+                      textController: provider.clientEmailController,
+                    ),
+                    SizedBox(height: 16.h),
+                    const LavelText(text: "Password * "),
+                    SizedBox(height: 10.h),
+                    AddClientTextField(
                       hintText: "Enter Client's Password".tr(),
-                      textController: provider.clientPasswordController),
-                  SizedBox(
-                    height: 16.h,
-                  ),
-                  const LavelText(
-                    text: "Address * ",
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  AddClientTextField(
+                      textController: provider.clientPasswordController,
+                    ),
+                    SizedBox(height: 16.h),
+                    const LavelText(text: "Address * "),
+                    SizedBox(height: 10.h),
+                    AddClientTextField(
                       hintText: "Enter Client's Address".tr(),
-                      textController: provider.clientAddressController),
-                  /*SizedBox(
+                      textController: provider.clientAddressController,
+                    ),
+                    /*SizedBox(
                     height: 16.h,
                   ),
                   const LavelText(
@@ -181,10 +165,8 @@ class AddClientScreen extends StatelessWidget {
                     textController: provider.clientDescriptionController,
                     maxLine: 6,
                   ),*/
-                  SizedBox(
-                    height: 30.h,
-                  ),
-                  ElevatedButton(
+                    SizedBox(height: 30.h),
+                    ElevatedButton(
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           await provider.addClient(context);
@@ -197,18 +179,22 @@ class AddClientScreen extends StatelessWidget {
                         ),
                         minimumSize: Size(double.infinity, 60.h),
                       ),
-                      child: Text(
-                        "Add Clients",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold),
-                      ).tr())
-                ],
+                      child:
+                          Text(
+                            "Add Clients",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ).tr(),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          },
+        ),
       ),
     );
   }

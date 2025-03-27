@@ -1,7 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/add_client/add_client_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/client_list/client_list_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/provider/client_provider.dart';
@@ -11,7 +7,12 @@ import 'package:crm_demo/screens/custom_widgets/dashboard.dart';
 import 'package:crm_demo/screens/custom_widgets/dashboard_shimer_effect.dart';
 import 'package:crm_demo/screens/custom_widgets/see_all_title.dart';
 import 'package:crm_demo/utils/nav_utail.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+
 import '../../../../../api_service/connectivity/no_internet_screen.dart';
 
 class ClientDashboard extends StatelessWidget {
@@ -23,30 +24,24 @@ class ClientDashboard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Wrap(
-              spacing: 12,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Container(
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color(0XFF004D96),
-                            Color(0XFF0082FF),
-                          ])),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
+            spacing: 12,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0XFF004D96), Color(0XFF0082FF)],
                   ),
                 ),
-                Text(
-                  title.tr(),
-                  style: TextStyle(color: Colors.grey[600]),
-                )
-              ]),
-          const Divider()
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
+              Text(title.tr(), style: TextStyle(color: Colors.grey[600])),
+            ],
+          ),
+          const Divider(),
         ],
       ),
     );
@@ -57,16 +52,20 @@ class ClientDashboard extends StatelessWidget {
     return NoInternetScreen(
       child: ChangeNotifierProvider(
         create: (context) => CrmClientProvider(context),
-        child: Consumer<CrmClientProvider>(builder: (context, provider, _) {
-          return Scaffold(
+        child: Consumer<CrmClientProvider>(
+          builder: (context, provider, _) {
+            return Scaffold(
               backgroundColor: const Color(0xffF5F6FA),
               appBar: AppBar(
                 elevation: 0,
-                title: Text(
-                  "Clients",
-                  style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
-                ).tr(),
+                title:
+                    Text(
+                      "Clients",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.sp,
+                      ),
+                    ).tr(),
                 actions: [
                   Visibility(
                     visible: provider.isAdmian ?? false,
@@ -74,39 +73,49 @@ class ClientDashboard extends StatelessWidget {
                       onSelected: (value) {
                         menuItemRoute(value, context);
                       },
-                      itemBuilder: (BuildContext context) => [
-                        _buildPopupMenuItem('add_client'),
-                      ],
+                      itemBuilder:
+                          (BuildContext context) => [
+                            _buildPopupMenuItem('add_client'),
+                          ],
                     ),
-                  )
+                  ),
                 ],
               ),
-              body: provider.crmClientDashboardResponse?.data != null
-                  ? SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      scrollDirection: Axis.vertical,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 24.h, horizontal: 17.w),
-                        child: Column(
-                          children: [
-                            GridView.builder(
+              body:
+                  provider.crmClientDashboardResponse?.data != null
+                      ? SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 24.h,
+                            horizontal: 17.w,
+                          ),
+                          child: Column(
+                            children: [
+                              GridView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: provider.crmClientDashboardResponse
-                                        ?.data?.staticstics?.length ??
+                                itemCount:
+                                    provider
+                                        .crmClientDashboardResponse
+                                        ?.data
+                                        ?.staticstics
+                                        ?.length ??
                                     0,
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        mainAxisExtent: 140,
-                                        crossAxisSpacing: 4.0,
-                                        mainAxisSpacing: 4.0),
+                                      crossAxisCount: 2,
+                                      mainAxisExtent: 140,
+                                      crossAxisSpacing: 4.0,
+                                      mainAxisSpacing: 4.0,
+                                    ),
                                 itemBuilder: (BuildContext context, int index) {
-                                  final data = provider
-                                      .crmClientDashboardResponse
-                                      ?.data
-                                      ?.staticstics?[index];
+                                  final data =
+                                      provider
+                                          .crmClientDashboardResponse
+                                          ?.data
+                                          ?.staticstics?[index];
                                   return DashboardCard(
                                     backgroundImage: data!.image!,
                                     title: data.text ?? "",
@@ -116,46 +125,68 @@ class ClientDashboard extends StatelessWidget {
                                     titleTop: 58.0.h,
                                     titleRight: 20.0.w,
                                   );
-                                }),
+                                },
+                              ),
 
-                            ///list title
-                            SeeAllTitle(
-                              titile: "Clients",
-                              ontap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const ClientListScreen()),);
-                              },
-                            ),
-                            SizedBox(height: 2.h),
-                            ListView.builder(
+                              ///list title
+                              SeeAllTitle(
+                                titile: "Clients",
+                                ontap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => const ClientListScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              SizedBox(height: 2.h),
+                              ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: provider.crmClientDashboardResponse?.data?.clients?.length ?? 0,
+                                itemCount:
+                                    provider
+                                        .crmClientDashboardResponse
+                                        ?.data
+                                        ?.clients
+                                        ?.length ??
+                                    0,
                                 itemBuilder: (BuildContext context, int index) {
-                                  final data = provider.crmClientDashboardResponse?.data?.clients?[index];
+                                  final data =
+                                      provider
+                                          .crmClientDashboardResponse
+                                          ?.data
+                                          ?.clients?[index];
                                   return ClientListCard(
                                     ontap: () {
-                                      NavUtil.navigateScreen(context, NewClientDetailsScreen(clientId: data!.id!));
+                                      NavUtil.navigateScreen(
+                                        context,
+                                        NewClientDetailsScreen(
+                                          clientId: data!.id!,
+                                        ),
+                                      );
                                     },
                                     name: data?.name,
                                     email: data?.email,
                                     profileImage: data?.avater,
                                     number: data?.phone,
                                   );
-                                }),
+                                },
+                              ),
 
-                            SizedBox(
-                              height: 82.h,
-                            ),
-                          ],
+                              SizedBox(height: 82.h),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  : const DashboardShimerEffect());
-        }),
+                      )
+                      : const DashboardShimerEffect(),
+            );
+          },
+        ),
       ),
     );
   }
-
 
   menuItemRoute(value, context) {
     switch (value) {

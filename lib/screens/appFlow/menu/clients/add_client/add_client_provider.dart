@@ -1,14 +1,14 @@
-import 'dart:convert';
 import 'dart:io';
+
+import 'package:crm_demo/custom_widgets/custom_dialog.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/model/company_list_model.dart';
-import 'package:dio/dio.dart';
+import 'package:crm_demo/screens/appFlow/navigation_bar/buttom_navigation_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:crm_demo/custom_widgets/custom_dialog.dart';
-import 'package:crm_demo/screens/appFlow/navigation_bar/buttom_navigation_bar.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../../../../../utils/nav_utail.dart';
 import '../crm_clinet_repository/client_repository.dart';
 
@@ -41,20 +41,19 @@ class AddClientProvider extends ChangeNotifier {
     }
 
     /*String fileName = imagePath!.path.split('/').last;*/
-
-    final data = FormData.fromMap({
+    final data = {
       "request": "createNewUser",
       "header": "5171a28f0ea95d2b2feb104fef8cc19d",
-      "data": jsonEncode({   // ✅ Ensure nested object is JSON encoded
+      "data": {
         "conpany_id": int.parse(companyData?.companyId ?? '0'),
         "user_name": clientNameController.text,
         "email_id": clientEmailController.text,
         "mobile": clientPhoneNumberController.text,
         "password": clientPasswordController.text,
         "address": clientAddressController.text,
-      }),
+      },
       /*"avatar": await MultipartFile.fromFile(imagePath!.path, filename: fileName),*/
-    });
+    };
 
     final response = await CrmClientRepository.addClient(data);
 
@@ -64,7 +63,6 @@ class AddClientProvider extends ChangeNotifier {
     }
   }
 
-
   selectCompany(CompanyData? value) {
     companyData = value;
     notifyListeners();
@@ -73,9 +71,7 @@ class AddClientProvider extends ChangeNotifier {
   Future getCompanyList() async {
     final response = await CrmClientRepository.getCompanyList();
     if (response['status'] == true) {
-      companyListModel = CompanyListModel.fromJson(
-        response,
-      ); /*companyListModelFromJson(jsonDecode(response))*/
+      companyListModel = CompanyListModel.fromJson(response);
       notifyListeners();
     }
   }

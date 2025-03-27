@@ -1,10 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:crm_demo/screens/appFlow/menu/projects/create_project/create_project_screen.dart';
+import 'package:crm_demo/screens/appFlow/menu/clients/model/company_list_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/projects/project_list/project_list_content.dart';
 import 'package:crm_demo/screens/appFlow/menu/projects/project_list/project_list_provider.dart';
+import 'package:crm_demo/screens/appFlow/menu/sales/product/content/custom_dropdown.dart';
 import 'package:crm_demo/screens/custom_widgets/custom_title_appbar.dart';
+import 'package:crm_demo/screens/custom_widgets/label_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+
 import '../../../../../api_service/connectivity/no_internet_screen.dart';
 
 class ProjectListScreen extends StatelessWidget {
@@ -21,15 +24,13 @@ class ProjectListScreen extends StatelessWidget {
               backgroundColor: const Color(0xffF5F6FA),
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(56.h),
-                child: const CustomTitleAppBar(
-                  title: "Project_List",
-                ),
+                child: const CustomTitleAppBar(title: "KYC List"),
               ),
               body: Padding(
                 padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 16.w),
                 child: Column(
                   children: [
-                    Row(
+                    /*Row(
                       children: [
                         Expanded(
                           child: Container(
@@ -83,13 +84,24 @@ class ProjectListScreen extends StatelessWidget {
                           ),
                         )
                       ],
+                    ),*/
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: const LavelText(text: "Company * "),
                     ),
-                    SizedBox(
-                      height: 20.h,
+                    SizedBox(height: 10.h),
+                    CustomDropdown<CompanyData>(
+                      value: provider.companyData,
+                      labelText: 'Select Company ',
+                      items: provider.companyList ?? [],
+                      onChanged: (CompanyData? newValue) {
+                        provider.selectCompany(newValue!);
+                      },
+                      itemLabelBuilder:
+                          (CompanyData value) => value.companyName ?? '',
                     ),
-                    Expanded(
-                      child: ProjectListContent(provider: provider),
-                    ),
+                    SizedBox(height: 20.h),
+                    Expanded(child: ProjectListContent(provider: provider)),
                   ],
                 ),
               ),

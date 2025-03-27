@@ -1,11 +1,3 @@
-import 'dart:convert';
-
-import 'package:crm_demo/main.dart' show navigatorKey;
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:crm_demo/data/model/client_estimate/client_estimate_list_model.dart';
 import 'package:crm_demo/data/model/client_expense/client_expense_category_list_model.dart';
 import 'package:crm_demo/data/model/client_expense/client_expense_list-model.dart';
@@ -21,12 +13,18 @@ import 'package:crm_demo/data/model/crm_client_model/client_file_list_model.dart
 import 'package:crm_demo/data/model/crm_client_model/client_note_list_model.dart';
 import 'package:crm_demo/data/model/crm_client_model/client_profile_details_model.dart';
 import 'package:crm_demo/data/model/crm_client_model/client_reminder_list_model.dart';
-import 'package:crm_demo/data/model/crm_client_model/client_task_list_model.dart';
 import 'package:crm_demo/data/model/crm_client_model/new_client_tasklist_model.dart';
+import 'package:crm_demo/main.dart' show navigatorKey;
 import 'package:crm_demo/screens/appFlow/menu/clients/model/client_dashboard_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/model/client_details_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/model/client_list_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/model/deal_list_model.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 import '../../../../../api_service/api_response.dart';
 import '../../../../../api_service/api_service.dart';
 import '../model/project_details_model.dart';
@@ -76,22 +74,21 @@ class CrmClientRepository {
   }
 
   ///addClient
-  static Future addClient(FormData data) async {
+  static Future addClient(data) async {
     try {
       EasyLoading.show(status: 'loading...');
 
       final response = await ApiService.getDio()!.post(
         '/Welcome/createNewUser',
-        data: data,  // ✅ Pass FormData directly
+        data: data,
       );
 
       EasyLoading.dismiss();
-      if(response.data['status'] == true){
+      if (response.data['status'] == true) {
         Navigator.pop(navigatorKey.currentContext!);
         Fluttertoast.showToast(msg: 'Admin Added Successfully');
-      }else{
+      } else {
         Navigator.pop(navigatorKey.currentContext!);
-          /*Fluttertoast.showToast(msg: 'Something went to wrong');*/
         Fluttertoast.showToast(msg: response.data['msg']);
       }
       if (kDebugMode) {
@@ -105,12 +102,41 @@ class CrmClientRepository {
       }
       EasyLoading.dismiss();
       Fluttertoast.showToast(
-        msg: e.response?.data['message'] ?? 'Something went wrong',
+        msg: e.response?.data['msg'] ?? 'Something went wrong',
       );
       return e.response?.data;
     }
   }
 
+  static Future getAllAdminList({required String companyId}) async {
+    try {
+      EasyLoading.show(status: 'loading...');
+      final response = await ApiService.getDio()!.post(
+        '/Welcome/getUserList',
+        data: {
+          "request": "getUserList",
+          "header": "5171a28f0ea95d2b2feb104fef8cc19d",
+          "data": {"conpany_id": companyId},
+        },
+      );
+      EasyLoading.dismiss();
+      if (kDebugMode) {
+        print(response.data);
+      }
+      var obj = response.data;
+
+      return obj;
+    } on DioError catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+      EasyLoading.dismiss();
+      Fluttertoast.showToast(
+        msg: e.response?.data['message'] ?? 'Something went wrong',
+      );
+      return e.response?.data;
+    }
+  }
 
   ///Get Company List
   static Future getCompanyList() async {
