@@ -1,7 +1,12 @@
 import 'package:crm_demo/api_service/connectivity/no_internet_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/projects/add_kyc/add_kyc_provider.dart';
+import 'package:crm_demo/screens/appFlow/menu/projects/add_kyc/widgets/bank_details.dart'
+    show BankDetails;
 import 'package:crm_demo/screens/appFlow/menu/projects/add_kyc/widgets/personal_details.dart'
     show PersonalDetails;
+import 'package:crm_demo/screens/appFlow/menu/projects/add_kyc/widgets/professional_details.dart'
+    show ProfessionalDetails;
+import 'package:crm_demo/screens/appFlow/menu/projects/add_kyc/widgets/upload_profile_image.dart';
 import 'package:crm_demo/screens/custom_widgets/custom_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,7 +40,9 @@ class AddKycFrom extends StatelessWidget {
                           physics: NeverScrollableScrollPhysics(),
                           children: [
                             PersonalDetails(provider: provider),
-                            PersonalDetails(provider: provider),
+                            ProfessionalDetails(provider: provider),
+                            BankDetails(provider: provider),
+                            UploadProfileImage(provider: provider),
                           ],
                         ),
                       ),
@@ -60,9 +67,9 @@ class AddKycFrom extends StatelessWidget {
                                   foregroundColor: Colors.white,
                                 ),
                                 child: Text(
-                                  provider.currentIndex == 0
-                                      ? "Next"
-                                      : "Submit",
+                                  provider.currentIndex == 3
+                                      ? "Submit"
+                                      : "Next",
                                 ),
                               ),
                             ),

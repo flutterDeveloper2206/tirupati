@@ -1,4 +1,5 @@
 import 'package:crm_demo/screens/appFlow/menu/projects/add_kyc/add_kyc_provider.dart';
+import 'package:crm_demo/screens/appFlow/menu/sales/product/content/custom_dropdown.dart';
 import 'package:crm_demo/screens/custom_widgets/add_client_textfield.dart';
 import 'package:easy_localization/easy_localization.dart'
     show StringTranslateExtension;
@@ -15,6 +16,18 @@ class ProfessionalDetails extends StatelessWidget {
     return ListView(
       children: [
         SizedBox(height: 16.h),
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            "Professional Information",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        SizedBox(height: 16.h),
         AddClientTextField(
           hintText: "Name as per Aadhar".tr(),
           textController: provider.nameAsPerAadharController,
@@ -23,49 +36,75 @@ class ProfessionalDetails extends StatelessWidget {
         SizedBox(height: 16.h),
         AddClientTextField(
           hintText: "Mobile number linked to Adhar vard *".tr(),
+          keyboardType: TextInputType.phone,
           textController: provider.mobileAadharController,
         ),
 
         SizedBox(height: 16.h),
-        AddClientTextField(
-          hintText: "Age".tr(),
-          textController: provider.ageController,
+        /* const LavelText(text: "Education * "),
+        SizedBox(height: 10.h),*/
+        CustomDropdown<Education>(
+          value: provider.selectedEducation,
+          labelText: 'Select your Education ',
+          items: provider.educationList,
+          onChanged: (Education? newValue) {
+            provider.selectEducation(newValue!);
+          },
+          itemLabelBuilder: (Education value) => value.educationName ?? '',
         ),
 
         SizedBox(height: 16.h),
         AddClientTextField(
-          hintText: "Email Id".tr(),
-          textController: provider.emailController,
+          hintText: "Company Name".tr(),
+          textController: provider.companyNameController,
         ),
 
         SizedBox(height: 16.h),
         AddClientTextField(
-          hintText: "Phone No".tr(),
-          textController: provider.phoneController,
+          hintText: "Department".tr(),
+          textController: provider.departmentController,
         ),
 
         SizedBox(height: 16.h),
         AddClientTextField(
-          hintText: "Alternate Number".tr(),
+          hintText: "Designation".tr(),
+          textController: provider.designationController,
+        ),
+
+        SizedBox(height: 16.h),
+        AddClientTextField(
+          hintText: "Date of Joi".tr(),
           textController: provider.alternatePhoneController,
         ),
 
         SizedBox(height: 16.h),
         AddClientTextField(
-          hintText: "Address".tr(),
+          hintText: "Date of Exit".tr(),
           textController: provider.addressController,
         ),
 
         SizedBox(height: 16.h),
         AddClientTextField(
-          hintText: "Pin code".tr(),
-          textController: provider.pinController,
+          hintText: "Aadhar card name".tr(),
+          textController: provider.aasharNameController,
         ),
 
         SizedBox(height: 16.h),
         AddClientTextField(
-          hintText: "State".tr(),
-          textController: provider.stateController,
+          hintText: "Pan card name".tr(),
+          textController: provider.panNameController,
+        ),
+
+        SizedBox(height: 16.h),
+        AddClientTextField(
+          hintText: "UAN Name".tr(),
+          textController: provider.uanController,
+        ),
+
+        SizedBox(height: 16.h),
+        AddClientTextField(
+          hintText: "ESIC Name".tr(),
+          textController: provider.esicNameController,
         ),
       ],
     );

@@ -77,6 +77,54 @@ class CrmProjectRepository {
     }
   }
 
+  ///projectDashboardResponse
+  static Future addKycForm({var body}) async {
+    try {
+      var response = await ApiService.getDio()!.post(
+        "/Welcome/addKyc",
+        data: body,
+      );
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
+          print("add kyc data......${response.data}");
+        }
+        var obj = projectDashboardModelFromJson(response.toString());
+        return ApiResponse(
+          httpCode: response.statusCode,
+          result: obj.result,
+          message: obj.message,
+          data: obj,
+        );
+      } else {
+        var obj = projectDashboardModelFromJson(response.toString());
+        return ApiResponse(
+          httpCode: response.statusCode,
+          result: obj.result,
+          message: obj.message,
+          data: obj,
+        );
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.badResponse) {
+        var obj = projectDashboardModelFromJson(e.response.toString());
+        return ApiResponse(
+          httpCode: e.response!.statusCode,
+          result: e.response!.data["result"],
+          message: e.response!.data["message"],
+          error: obj,
+        );
+      } else {
+        if (kDebugMode) {
+          print(e.message);
+        }
+        return ApiResponse(
+          httpCode: -1,
+          message: "Connection error ${e.message}",
+        );
+      }
+    }
+  }
+
   ///Get Company List
   static Future getCompanyList() async {
     try {

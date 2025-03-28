@@ -7,11 +7,16 @@ class AddClientTextField extends StatelessWidget {
     Key? key,
     this.hintText,
     this.maxLine,
+    this.keyboardType,
+    this.validatorFun,
     this.textController,
   }) : super(key: key);
   final String? hintText;
   final TextEditingController? textController;
+  final String? Function(String?)? validatorFun;
   final int? maxLine;
+  final TextInputType? keyboardType;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,12 +30,17 @@ class AddClientTextField extends StatelessWidget {
         controller: textController,
         maxLines: maxLine ?? 1,
         cursorColor: const Color(0xff5B58FF),
+        keyboardType: keyboardType ?? TextInputType.text,
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hintText ?? "Enter_your_value".tr(),
         ),
+
         validator: (value) {
-          if (value!.isEmpty) {
+          if (validatorFun != null) {
+            return validatorFun!(value);
+          }
+          if (value == null || value.trim().isEmpty) {
             return tr("this_field_is_required");
           }
           return null;

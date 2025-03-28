@@ -1,9 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:crm_demo/screens/appFlow/menu/projects/crm_project_repository/crm_project_repository.dart';
 import 'package:crm_demo/screens/appFlow/menu/projects/model/project_kyc_list_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/projects/model/project_list_model.dart';
+import 'package:crm_demo/utils/app_const.dart' show AppConst;
+import 'package:crm_demo/utils/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart'
+    show ImagePicker, ImageSource, XFile;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AddKycProvider extends ChangeNotifier {
@@ -13,13 +19,13 @@ class AddKycProvider extends ChangeNotifier {
   ProjectListModel? crmProjectListResponse;
   Timer? timeHnadle;
   String search = "";
-  int page = 1;
+  int page = 4;
   bool isError = false;
   late RefreshController refreshController;
   ProjectKYCListModel projectKYCListModel = ProjectKYCListModel();
   final searchController = TextEditingController();
   final nameController = TextEditingController();
-  final nameAsPerAadharController = TextEditingController();
+  final aadharcardController = TextEditingController();
   final fatherNameController = TextEditingController();
   final ageController = TextEditingController();
   final emailController = TextEditingController();
@@ -30,13 +36,35 @@ class AddKycProvider extends ChangeNotifier {
   final stateController = TextEditingController();
 
   ///step 2
+  final nameAsPerAadharController = TextEditingController();
   final mobileAadharController = TextEditingController();
+  final companyNameController = TextEditingController();
+  final departmentController = TextEditingController();
+  final designationController = TextEditingController();
+  final aasharNameController = TextEditingController();
+  final panNameController = TextEditingController();
+  final uanController = TextEditingController();
+  final esicNameController = TextEditingController();
+
+  ///Step 3
+  final bankNameController = TextEditingController();
+  final accountNumberController = TextEditingController();
+  final ifscCodeController = TextEditingController();
+
   Gender? selectedGender;
   MaritalStatus? selectedMaritalStatus;
+  Education? selectedEducation;
 
   List<Gender> genderList = [
     Gender(genderId: '1', gender: 'Male'),
     Gender(genderId: '2', gender: 'Female'),
+  ];
+
+  List<Education> educationList = [
+    Education(educationId: 1, educationName: 'Class X'),
+    Education(educationId: 2, educationName: 'Class XII'),
+    Education(educationId: 3, educationName: 'Graduate'),
+    Education(educationId: 4, educationName: 'Post Graduate'),
   ];
 
   List<MaritalStatus> maritalStatusList = [
@@ -49,8 +77,8 @@ class AddKycProvider extends ChangeNotifier {
   }
 
   void nextPage() {
-    if (formKey.currentState!.validate()) {
-      if (currentIndex < 1) {
+    if (formKey.currentState!.validate() || true) {
+      if (currentIndex < 3) {
         currentIndex++;
         pageController.animateToPage(
           currentIndex,
@@ -60,7 +88,7 @@ class AddKycProvider extends ChangeNotifier {
         notifyListeners();
       }
     } else {
-      /*submitForm();*/
+      submitForm();
     }
   }
 
@@ -76,12 +104,78 @@ class AddKycProvider extends ChangeNotifier {
     }
   }
 
-  void submitForm() {
+  Future submitForm() async {
+    var userId = await SPUtill.getIntValue(SPUtill.keyUserId);
     if (formKey.currentState!.validate()) {
-      // Form is valid, submit the data
       print(
         "Submitting: Name: ${nameController.text}, Gender: $selectedGender, Address: ${addressController.text}",
       );
+      List<int> imageBytes = selectedImage!.readAsBytesSync();
+      String base64Image = "data:image/png;base64,${base64Encode(imageBytes)}";
+      var body = {
+        "request": "addKyc",
+        "header": AppConst.header,
+        "data": {
+          "userid": userId,
+          "conpany_id": "1",
+          "name": nameController.text,
+          "dob": "11-01-1991",
+          "email": emailController.text,
+          "mobile": phoneController.text,
+          "address": addressController.text,
+          "pincode": pinController.text,
+          "state": stateController.text,
+          "bank_name": bankNameController.text,
+          "account_number": accountNumberController.text,
+          "ifsc": ifscCodeController.text,
+          "education_id": selectedEducation?.educationId,
+          "adhar": aadharcardController.text,
+          "pancard": panNameController.text,
+          "uan": uanController.text,
+          "esicName": esicNameController.text,
+          "new_company_name": companyNameController.text,
+          "title": "1",
+          "father_name": fatherNameController.text,
+          "marital_status": selectedMaritalStatus?.maritalStatusId,
+          "gender": selectedGender?.genderId,
+          "name_as_adhar": nameAsPerAadharController.text,
+          "mobile_adhar_linked": mobileAadharController.text,
+          "alternate_mobile": alternatePhoneController.text,
+          "department": departmentController.text,
+          "designation": designationController.text,
+          "doj": "04-03-2025",
+          "date_of_exit": "",
+          "remarks": "remarks",
+          "member_photo": base64Image,
+        },
+      };
+
+      final response = await CrmProjectRepository.addKycForm(body: body);
+      if (response['status'] == true) {
+        refreshController.loadComplete();
+        print("HELLO ");
+        notifyListeners();
+      } else {
+        refreshController.loadNoData();
+        notifyListeners();
+      }
+      notifyListeners();
+    }
+  }
+
+  File? selectedImage;
+  final ImagePicker _picker = ImagePicker();
+
+  // 📸 Pick Image (Gallery or Camera)
+  Future<void> pickImage(ImageSource source) async {
+    try {
+      final XFile? image = await _picker.pickImage(source: source);
+      if (image != null) {
+        selectedImage = File(image.path);
+        notifyListeners();
+      }
+    } catch (e) {
+      print("Error picking image: $e");
     }
   }
 
@@ -92,6 +186,11 @@ class AddKycProvider extends ChangeNotifier {
 
   selectMaritalStatus(MaritalStatus? value) {
     selectedMaritalStatus = value;
+    notifyListeners();
+  }
+
+  selectEducation(Education? value) {
+    selectedEducation = value;
     notifyListeners();
   }
 
@@ -198,4 +297,11 @@ class MaritalStatus {
   final String maritalStatus;
 
   MaritalStatus({required this.maritalStatusId, required this.maritalStatus});
+}
+
+class Education {
+  final int educationId;
+  final String educationName;
+
+  Education({required this.educationId, required this.educationName});
 }

@@ -1,7 +1,6 @@
 import 'package:crm_demo/screens/appFlow/menu/projects/add_kyc/add_kyc_provider.dart';
 import 'package:crm_demo/screens/appFlow/menu/sales/product/content/custom_dropdown.dart';
 import 'package:crm_demo/screens/custom_widgets/add_client_textfield.dart';
-import 'package:crm_demo/screens/custom_widgets/label_text.dart';
 import 'package:easy_localization/easy_localization.dart'
     show StringTranslateExtension;
 import 'package:flutter/material.dart';
@@ -17,13 +16,25 @@ class PersonalDetails extends StatelessWidget {
     return ListView(
       children: [
         SizedBox(height: 16.h),
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            "Personal Information",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        SizedBox(height: 16.h),
         AddClientTextField(
           hintText: "Name".tr(),
           textController: provider.nameController,
         ),
         SizedBox(height: 16.h),
-        const LavelText(text: "Gender * "),
-        SizedBox(height: 10.h),
+        /* const LavelText(text: "Gender * "),
+        SizedBox(height: 10.h),*/
         CustomDropdown<Gender>(
           value: provider.selectedGender,
           labelText: 'Select your gender ',
@@ -33,9 +44,9 @@ class PersonalDetails extends StatelessWidget {
           },
           itemLabelBuilder: (Gender value) => value.gender ?? '',
         ),
-
-        const LavelText(text: "Marital Status * "),
-        SizedBox(height: 10.h),
+        SizedBox(height: 16.h),
+        /*const LavelText(text: "Marital Status * "),
+        SizedBox(height: 10.h),*/
         CustomDropdown<MaritalStatus>(
           value: provider.selectedMaritalStatus,
           labelText: 'Select your Marital Status ',
@@ -61,11 +72,23 @@ class PersonalDetails extends StatelessWidget {
         SizedBox(height: 16.h),
         AddClientTextField(
           hintText: "Email Id".tr(),
+          validatorFun: (String? value) {
+            if (value == null || value.trim().isEmpty) {
+              return "Please enter your email";
+            } else if (!RegExp(
+              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+            ).hasMatch(value)) {
+              return "Enter a valid email (e.g. user@example.com)";
+            }
+            return null;
+          },
+          keyboardType: TextInputType.emailAddress,
           textController: provider.emailController,
         ),
 
         SizedBox(height: 16.h),
         AddClientTextField(
+          keyboardType: TextInputType.phone,
           hintText: "Phone No".tr(),
           textController: provider.phoneController,
         ),
@@ -73,6 +96,7 @@ class PersonalDetails extends StatelessWidget {
         SizedBox(height: 16.h),
         AddClientTextField(
           hintText: "Alternate Number".tr(),
+          keyboardType: TextInputType.phone,
           textController: provider.alternatePhoneController,
         ),
 
@@ -85,6 +109,7 @@ class PersonalDetails extends StatelessWidget {
         SizedBox(height: 16.h),
         AddClientTextField(
           hintText: "Pin code".tr(),
+          keyboardType: TextInputType.phone,
           textController: provider.pinController,
         ),
 
