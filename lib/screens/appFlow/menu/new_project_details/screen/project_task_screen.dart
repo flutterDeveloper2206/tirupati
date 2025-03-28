@@ -1,27 +1,95 @@
-
-import 'package:flutter/material.dart';
-import 'package:crm_demo/data/model/client_project_list_model.dart';
-import 'package:crm_demo/screens/appFlow/menu/new_clients_details/provider/client_task_provider.dart';
+import 'package:crm_demo/screens/appFlow/menu/clients/client_details/client_details_screen.dart';
+import 'package:crm_demo/screens/appFlow/menu/clients/model/client_list_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/project_task_provider.dart';
+import 'package:crm_demo/screens/appFlow/menu/projects/model/kyc_user_id_kyc_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/sales/product/content/custom_dropdown.dart';
 import 'package:crm_demo/screens/appFlow/menu/sales/product/content/new_form_field.dart';
-import 'package:crm_demo/screens/custom_widgets/custom_list_shimer.dart';
-import 'package:crm_demo/screens/custom_widgets/no_data_found_widget.dart';
-import 'package:crm_demo/screens/appFlow/menu/clients/model/client_list_model.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../../utils/res.dart';
 
+import '../../../../../utils/res.dart';
 
 class ProjectTaskScreen extends StatelessWidget {
   int projectId;
-  ProjectTaskScreen({super.key, required this.projectId});
+  final KYCUserIdKYCData kYCUserIdKYCData;
+  ProjectTaskScreen({
+    super.key,
+    required this.projectId,
+    required this.kYCUserIdKYCData,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ProjectTaskProvider>(
-        builder: (context, provider, _) {
-          final tasks = provider.projectTaskListResponse?.items;
-          return SingleChildScrollView(
+      builder: (context, provider, _) {
+        final tasks = provider.projectTaskListResponse?.items;
+        return ListView(
+          children: [
+            ProfileField(
+              icon: Icons.apartment,
+              label: "Name as Per Aadhar card",
+              value: kYCUserIdKYCData.adhar ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.person,
+              label: "Mobile number linked to Aadhar card",
+              value: kYCUserIdKYCData.mobileAdharLinked ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.email,
+              label: "Education",
+              value: kYCUserIdKYCData.educationName ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.phone,
+              label: "Department",
+              value: kYCUserIdKYCData.department ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.density_medium,
+              label: "Designation",
+              value: kYCUserIdKYCData.designation ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.calendar_month_sharp,
+              label: "Date of joining",
+              value: kYCUserIdKYCData.doj ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.calendar_month_sharp,
+              label: "Date of exit",
+              value: kYCUserIdKYCData.dateOfExit ?? 'N/A',
+            ),
+            /*
+            ProfileField(
+              icon: Icons.calendar_month_sharp,
+              label: "Aadhar Card Number",
+              value: kYCUserIdKYCData.a ?? 'N/A',
+            ),*/
+            ProfileField(
+              icon: Icons.calendar_month_sharp,
+              label: "Pan Card Number",
+              value: kYCUserIdKYCData.pancard ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.calendar_month_sharp,
+              label: "UAN Number",
+              value: kYCUserIdKYCData.uan ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.calendar_month_sharp,
+              label: "ESIC Number",
+              value: kYCUserIdKYCData.esicName ?? 'N/A',
+            ),
+            /*buildKYCItem("Name", Icons.person, "Mr Grge"),
+            buildKYCItem("Gender", null, "Male"),
+            buildKYCItem("Marital Status", null, "Single"),
+            buildKYCItem("Father Name / Husband Name", null, "Gege"),
+            buildKYCItem("Date of Birth", Icons.cake, "27-03-2025"),
+            buildKYCItem("Age", Icons.cake, "0"),
+            buildKYCItem("Email Id", null, "example@mail.com"),*/
+          ],
+        ) /*SingleChildScrollView(
               child:  Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: Column(
@@ -113,12 +181,16 @@ class ProjectTaskScreen extends StatelessWidget {
                   ],
                 ),
               )
-          );
-        }
+          )*/;
+      },
     );
   }
 
-  void createProjectTask(BuildContext parentContext, ProjectTaskProvider provider, int projectId) {
+  void createProjectTask(
+    BuildContext parentContext,
+    ProjectTaskProvider provider,
+    int projectId,
+  ) {
     showDialog(
       context: parentContext,
       builder: (BuildContext context) {
@@ -156,33 +228,52 @@ class ProjectTaskScreen extends StatelessWidget {
                             CustomDropdown<Client>(
                               value: provider.client,
                               labelText: 'Select Client',
-                              items: provider.crmClientListResponse?.data?.clients ?? [],
+                              items:
+                                  provider
+                                      .crmClientListResponse
+                                      ?.data
+                                      ?.clients ??
+                                  [],
                               onChanged: (Client? newValue) {
                                 provider.selectClient(newValue!);
                               },
-                              itemLabelBuilder: (Client value) => value.name ?? '',
+                              itemLabelBuilder:
+                                  (Client value) => value.name ?? '',
                             ),
                             const SizedBox(height: 8),
                             InkWell(
                               onTap: () => provider.selectStartDate(context),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
-                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 8,
+                                ),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.grey, width: 1),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1,
+                                  ),
                                 ),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       provider.startDate ?? "Start Date",
-                                      style: const TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     const Icon(
                                       Icons.calendar_month_outlined,
                                       color: Colors.grey,
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
@@ -191,23 +282,36 @@ class ProjectTaskScreen extends StatelessWidget {
                             InkWell(
                               onTap: () => provider.selectEndDate(context),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
-                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 8,
+                                ),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.grey, width: 1),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1,
+                                  ),
                                 ),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       provider.endDate ?? "End Date",
-                                      style: const TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     const Icon(
                                       Icons.calendar_month_outlined,
                                       color: Colors.grey,
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
@@ -218,15 +322,21 @@ class ProjectTaskScreen extends StatelessWidget {
                                 const SizedBox(height: 25),
                                 const Text(
                                   "Assign",
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 const SizedBox(height: 5),
                                 Card(
                                   elevation: 0,
                                   child: ListTile(
-                                    onTap: () => provider.getAllUserData(context),
+                                    onTap:
+                                        () => provider.getAllUserData(context),
                                     title: Text(
-                                      provider.allUserData?.name! ?? "Assign Members",
+                                      provider.allUserData?.name! ??
+                                          "Assign Members",
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                     subtitle: Text(
@@ -234,8 +344,10 @@ class ProjectTaskScreen extends StatelessWidget {
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                     leading: CircleAvatar(
-                                      backgroundImage: NetworkImage(provider.allUserData?.avatar! ??
-                                          'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'),
+                                      backgroundImage: NetworkImage(
+                                        provider.allUserData?.avatar! ??
+                                            'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+                                      ),
                                     ),
                                     trailing: const Icon(Icons.edit),
                                   ),
@@ -246,13 +358,24 @@ class ProjectTaskScreen extends StatelessWidget {
                                   child: Row(
                                     children: List.generate(
                                       provider.userNames.length,
-                                          (index) => Container(
-                                        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                      (index) => Container(
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: 10,
+                                          horizontal: 5,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 8,
+                                        ),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(100),
+                                          borderRadius: BorderRadius.circular(
+                                            100,
+                                          ),
                                           gradient: const LinearGradient(
-                                            colors: [AppColors.primaryColor, AppColors.primaryColor],
+                                            colors: [
+                                              AppColors.primaryColor,
+                                              AppColors.primaryColor,
+                                            ],
                                             begin: FractionalOffset(2.0, 0.0),
                                             end: FractionalOffset(0.0, 1.0),
                                             stops: [0.0, 1.0],
@@ -261,7 +384,10 @@ class ProjectTaskScreen extends StatelessWidget {
                                         ),
                                         child: Text(
                                           provider.userNames[index],
-                                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -270,10 +396,16 @@ class ProjectTaskScreen extends StatelessWidget {
                               ],
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 10,
+                              ),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  provider.createProjectTask(context, projectId);
+                                  provider.createProjectTask(
+                                    context,
+                                    projectId,
+                                  );
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xff5B58FF),
@@ -305,6 +437,4 @@ class ProjectTaskScreen extends StatelessWidget {
       },
     );
   }
-
-
 }

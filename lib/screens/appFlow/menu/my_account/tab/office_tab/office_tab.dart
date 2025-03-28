@@ -1,15 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
 import 'package:crm_demo/custom_widgets/custom_build_profile_details.dart';
 import 'package:crm_demo/data/model/response_offical_info.dart';
-import 'package:crm_demo/screens/appFlow/menu/my_account/tab/office_tab/edit_official_info/edit_official_info.dart';
 import 'package:crm_demo/screens/appFlow/menu/my_account/tab/office_tab/office_provider.dart';
-import 'package:crm_demo/utils/nav_utail.dart';
-import 'package:crm_demo/utils/res.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'change_password/change_password_profile.dart';
 
 class OfficeTab extends StatelessWidget {
   final ResponseOfficialInfo? officialInfo;
@@ -25,17 +19,16 @@ class OfficeTab extends StatelessWidget {
           return SingleChildScrollView(
             child: Column(
               children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                InkWell(
+                const SizedBox(height: 20),
+                /*InkWell(
                   onTap: () {
                     provider.pickImage(context);
                   },
                   child: Center(
                       child: Stack(
                     children: [
-                      ClipOval(
+                      */
+                /*ClipOval(
                         child: CachedNetworkImage(
                           height: 120,
                           width: 120,
@@ -49,7 +42,8 @@ class OfficeTab extends StatelessWidget {
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
                         ),
-                      ),
+                      ),*/
+                /*
                       Positioned(
                         bottom: 3,
                         right: 0,
@@ -73,39 +67,49 @@ class OfficeTab extends StatelessWidget {
                 ),
                 const SizedBox(
                   height: 20,
+                ),*/
+                buildProfileDetails(
+                  title: tr("name"),
+                  description: provider.name ?? tr("n/a"),
                 ),
                 buildProfileDetails(
-                    title: tr("name"),
-                    description: officialInfo?.data?.name ?? tr("n/a")),
+                  title: tr("mobile"),
+                  description: provider.mobile ?? tr("n/a"),
+                ),
                 buildProfileDetails(
-                    title: tr("email"),
-                    description: officialInfo?.data?.email ?? tr("n/a")),
+                  title: tr("email"),
+                  description: provider.emailId ?? tr("n/a"),
+                ),
                 buildProfileDetails(
-                    title: tr("designation"),
-                    description: officialInfo?.data?.designation ?? tr("n/a")),
+                  title: tr("user type"),
+                  description: provider.userType ?? tr("n/a"),
+                ),
                 buildProfileDetails(
-                    title: tr("department"),
-                    description: officialInfo?.data?.department ?? tr("n/a")),
-                buildProfileDetails(
-                    title: tr("manager"),
-                    description: officialInfo?.data?.manager ?? tr("n/a")),
+                  title: tr("company name"),
+                  description: provider.companyName ?? tr("n/a"),
+                ),
+                /* buildProfileDetails(
+                  title: tr("manager"),
+                  description: officialInfo?.data?.manager ?? tr("n/a"),
+                ),
                 buildProfileDetails(
                   title: tr("date_of_joining"),
                   description: officialInfo?.data?.joiningDate ?? tr("n/a"),
                 ),
                 buildProfileDetails(
-                    title: tr("employee_type"),
-                    description: officialInfo?.data?.employeeType ?? tr("n/a")),
-                buildProfileDetails(
-                    title: tr("employee_id"),
-
-                    description: officialInfo?.data?.employeeId ?? tr("n/a")),
-                buildProfileDetails(
-                    title: tr("grade"),
-                    description: officialInfo?.data?.grade ?? tr("n/a")),
-                const SizedBox(
-                  height: 20,
+                  title: tr("employee_type"),
+                  description: officialInfo?.data?.employeeType ?? tr("n/a"),
                 ),
+                buildProfileDetails(
+                  title: tr("employee_id"),
+
+                  description: officialInfo?.data?.employeeId ?? tr("n/a"),
+                ),
+                buildProfileDetails(
+                  title: tr("grade"),
+                  description: officialInfo?.data?.grade ?? tr("n/a"),
+                ),*/
+                /*const SizedBox(height: 20),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 30),
                   height: 45,
@@ -113,10 +117,9 @@ class OfficeTab extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       NavUtil.navigateScreen(
-                          context,
-                          EditOfficialInfo(
-                            officialInfo: officialInfo,
-                          ));
+                        context,
+                        EditOfficialInfo(officialInfo: officialInfo),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.colorPrimary,
@@ -124,42 +127,45 @@ class OfficeTab extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    child:  Text(tr("edit_official_info"),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        )),
+                    child: Text(
+                      tr("edit_official_info"),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 30),
                   height: 45,
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      NavUtil.navigateScreen(context, const ChangePasswordProfile());
+                      NavUtil.navigateScreen(
+                        context,
+                        const ChangePasswordProfile(),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.colorPrimary,
-                        shape: RoundedRectangleBorder(
-                         borderRadius: BorderRadius.circular(10.0),
-                        ),
+                      backgroundColor: AppColors.colorPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
-                    child:  Text(tr("change_password"),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        )),
+                    child: Text(
+                      tr("change_password"),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
+                const SizedBox(height: 50),*/
               ],
             ),
           );

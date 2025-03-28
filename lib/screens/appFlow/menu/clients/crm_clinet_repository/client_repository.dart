@@ -19,6 +19,7 @@ import 'package:crm_demo/screens/appFlow/menu/clients/model/client_dashboard_mod
 import 'package:crm_demo/screens/appFlow/menu/clients/model/client_details_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/model/client_list_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/model/deal_list_model.dart';
+import 'package:crm_demo/utils/app_const.dart' show AppConst;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -74,14 +75,11 @@ class CrmClientRepository {
   }
 
   ///addClient
-  static Future addClient(data) async {
+  static Future addClient(data, {required String endPoints}) async {
     try {
       EasyLoading.show(status: 'loading...');
 
-      final response = await ApiService.getDio()!.post(
-        '/Welcome/createNewUser',
-        data: data,
-      );
+      final response = await ApiService.getDio()!.post(endPoints, data: data);
 
       EasyLoading.dismiss();
       if (response.data['status'] == true) {
@@ -101,9 +99,9 @@ class CrmClientRepository {
         print(e.toString());
       }
       EasyLoading.dismiss();
-      Fluttertoast.showToast(
+      /*Fluttertoast.showToast(
         msg: e.response?.data['msg'] ?? 'Something went wrong',
-      );
+      );*/
       return e.response?.data;
     }
   }
@@ -115,7 +113,7 @@ class CrmClientRepository {
         '/Welcome/getUserList',
         data: {
           "request": "getUserList",
-          "header": "5171a28f0ea95d2b2feb104fef8cc19d",
+          "header": AppConst.header,
           "data": {"conpany_id": companyId},
         },
       );
@@ -144,10 +142,7 @@ class CrmClientRepository {
       EasyLoading.show(status: 'loading...');
       final response = await ApiService.getDio()!.post(
         '/Welcome/getCompanyList',
-        data: {
-          "request": "getCompanyList",
-          "header": "5171a28f0ea95d2b2feb104fef8cc19d",
-        },
+        data: {"request": "getCompanyList", "header": AppConst.header},
       );
       EasyLoading.dismiss();
       if (kDebugMode) {

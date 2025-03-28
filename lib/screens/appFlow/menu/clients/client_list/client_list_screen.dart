@@ -1,9 +1,8 @@
+import 'package:crm_demo/screens/appFlow/menu/clients/client_details/client_details_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/model/company_list_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/provider/client_provider.dart';
-import 'package:crm_demo/screens/appFlow/menu/new_clients_details/content/client_profile_details_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/sales/product/content/custom_dropdown.dart';
 import 'package:crm_demo/screens/custom_widgets/label_text.dart' show LavelText;
-import 'package:crm_demo/utils/nav_utail.dart' show NavUtil;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,58 +39,6 @@ class ClientListScreen extends StatelessWidget {
                   children: [
                     SizedBox(height: 10.h),
 
-                    /* Search Bar */
-                    /*Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 12.w),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color(0xffEBEBEB),
-                              ),
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: TextFormField(
-                              onChanged: ((value) {
-                                provider.getSearchValue(value);
-                              }),
-                              maxLines: 1,
-                              cursorColor: const Color(0xff5B58FF),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                suffixIcon: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0,
-                                  ),
-                                  child: Container(
-                                    padding: EdgeInsets.all(8.sp),
-                                    height: 29.h,
-                                    width: 29.w,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xff5B58FF),
-                                    ),
-                                    child: Image.asset(
-                                      "assets/task/search_bar.png",
-                                      height: 11.h,
-                                      width: 11.w,
-                                    ),
-                                  ),
-                                ),
-                                hintStyle: TextStyle(
-                                  color: const Color(0xffCED1DA),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12.sp,
-                                ),
-                                hintText: "Search".tr(),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),*/
                     Align(
                       alignment: Alignment.centerLeft,
                       child: const LavelText(text: "Company * "),
@@ -167,12 +114,16 @@ class ClientListScreen extends StatelessWidget {
 
                                   return InkWell(
                                     onTap: () {
-                                      NavUtil.navigateScreen(
+                                      Navigator.push(
                                         context,
-                                        ClientProfileDetailsScreen(
-                                          clientId: int.parse(
-                                            user.userid ?? '',
-                                          ),
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => ProfileDetailsScreen(
+                                                user:
+                                                    provider
+                                                        .allAdminListModel
+                                                        .data![index],
+                                              ),
                                         ),
                                       );
                                     },

@@ -1,24 +1,44 @@
+import 'package:crm_demo/screens/appFlow/menu/clients/client_details/client_details_screen.dart';
+import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/project_milestone_provider.dart';
+import 'package:crm_demo/screens/appFlow/menu/projects/model/kyc_user_id_kyc_model.dart';
+import 'package:crm_demo/screens/appFlow/menu/sales/product/content/custom_dropdown.dart';
+import 'package:crm_demo/screens/appFlow/menu/sales/product/content/new_form_field.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-  import 'package:flutter/material.dart';
-  import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/project_milestone_provider.dart';
-  import 'package:crm_demo/screens/appFlow/menu/sales/product/content/custom_dropdown.dart';
-  import 'package:crm_demo/screens/appFlow/menu/sales/product/content/new_form_field.dart';
-  import 'package:crm_demo/screens/custom_widgets/custom_list_shimer.dart';
-  import 'package:crm_demo/screens/custom_widgets/no_data_found_widget.dart';
-  import 'package:provider/provider.dart';
-  import '../../../../../utils/res.dart';
+class ProjectMilestoneScreen extends StatelessWidget {
+  int projectId;
+  final KYCUserIdKYCData kYCUserIdKYCData;
+  ProjectMilestoneScreen({
+    super.key,
+    required this.projectId,
+    required this.kYCUserIdKYCData,
+  });
 
-
-  class ProjectMilestoneScreen extends StatelessWidget {
-    int projectId;
-    ProjectMilestoneScreen({super.key, required this.projectId});
-
-    @override
-    Widget build(BuildContext context) {
-      return Consumer<ProjectMilestoneProvider>(
-          builder: (context, provider, _) {
-            final milestones = provider.projectMilestoneListResponse?.data?.data;
-            return SingleChildScrollView(
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ProjectMilestoneProvider>(
+      builder: (context, provider, _) {
+        final milestones = provider.projectMilestoneListResponse?.data?.data;
+        return ListView(
+          children: [
+            ProfileField(
+              icon: Icons.currency_rupee,
+              label: "Bank Name",
+              value: kYCUserIdKYCData.bankName ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.account_balance,
+              label: "Name",
+              value: kYCUserIdKYCData.accountNumber ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.local_activity_rounded,
+              label: "IFDC Code",
+              value: kYCUserIdKYCData.ifsc ?? 'N/A',
+            ),
+          ],
+        ) /*SingleChildScrollView(
                 child:  Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 14),
                   child: Column(
@@ -110,139 +130,175 @@
                     ],
                   ),
                 )
-            );
-          }
-      );
-    }
-
-    void createProjectMilestone(BuildContext parentContext, ProjectMilestoneProvider provider, int projectId) {
-      showDialog(
-        context: parentContext,
-        builder: (BuildContext context) {
-          return ChangeNotifierProvider.value(
-            value: provider,
-            child: Builder(
-              builder: (context) {
-                return Dialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    padding: const EdgeInsets.all(16.0),
-                    child: Consumer<ProjectMilestoneProvider>(
-                      builder: (_, provider, __) {
-                        return SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(height: 5),
-                              const Text(
-                                "Add Milestone",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              NewTextField(
-                                labelText: "Name",
-                                controller: provider.milestoneNameController,
-                              ),
-                              NewTextField(
-                                labelText: "Note",
-                                controller: provider.milestoneNoteController,
-                                maxLine: 3,
-                              ),
-                              CustomDropdown<String>(
-                                value: provider.status,
-                                labelText: 'Select Status',
-                                items: provider.statusList?? [],
-                                onChanged: (String? newValue) {
-                                  provider.selectStatus(newValue!);
-                                },
-                                itemLabelBuilder: (String value) => value ?? '',
-                              ),
-                              const SizedBox(height: 8),
-                              InkWell(
-                                onTap: () => provider.selectStartDate(context),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
-                                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: Colors.grey, width: 1),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        provider.startDate ?? "Start Date",
-                                        style: const TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
-                                      ),
-                                      const Icon(
-                                        Icons.calendar_month_outlined,
-                                        color: Colors.grey,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 14),
-                              InkWell(
-                                onTap: () => provider.selectEndDate(context),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
-                                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: Colors.grey, width: 1),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        provider.endDate ?? "End Date",
-                                        style: const TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.bold),
-                                      ),
-                                      const Icon(
-                                        Icons.calendar_month_outlined,
-                                        color: Colors.grey,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    provider.createProjectMilestone(context, projectId);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xff5B58FF),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    minimumSize: const Size(double.infinity, 50),
-                                  ),
-                                  child: const Text(
-                                    "Create",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
-      );
-    }
+            )*/;
+      },
+    );
   }
+
+  void createProjectMilestone(
+    BuildContext parentContext,
+    ProjectMilestoneProvider provider,
+    int projectId,
+  ) {
+    showDialog(
+      context: parentContext,
+      builder: (BuildContext context) {
+        return ChangeNotifierProvider.value(
+          value: provider,
+          child: Builder(
+            builder: (context) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Consumer<ProjectMilestoneProvider>(
+                    builder: (_, provider, __) {
+                      return SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(height: 5),
+                            const Text(
+                              "Add Milestone",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            NewTextField(
+                              labelText: "Name",
+                              controller: provider.milestoneNameController,
+                            ),
+                            NewTextField(
+                              labelText: "Note",
+                              controller: provider.milestoneNoteController,
+                              maxLine: 3,
+                            ),
+                            CustomDropdown<String>(
+                              value: provider.status,
+                              labelText: 'Select Status',
+                              items: provider.statusList ?? [],
+                              onChanged: (String? newValue) {
+                                provider.selectStatus(newValue!);
+                              },
+                              itemLabelBuilder: (String value) => value ?? '',
+                            ),
+                            const SizedBox(height: 8),
+                            InkWell(
+                              onTap: () => provider.selectStartDate(context),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 8,
+                                ),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      provider.startDate ?? "Start Date",
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.calendar_month_outlined,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            InkWell(
+                              onTap: () => provider.selectEndDate(context),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 8,
+                                ),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      provider.endDate ?? "End Date",
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.calendar_month_outlined,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 10,
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  provider.createProjectMilestone(
+                                    context,
+                                    projectId,
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff5B58FF),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  minimumSize: const Size(double.infinity, 50),
+                                ),
+                                child: const Text(
+                                  "Create",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}

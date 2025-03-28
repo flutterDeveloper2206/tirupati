@@ -1,11 +1,8 @@
+import 'package:crm_demo/utils/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:crm_demo/utils/shared_preferences.dart';
-
-
 
 class AppConst {
-
   // static const String _baseUrlTest = "https://crmweb.onesttech.com";
   static String? baseUrlTest;
 
@@ -16,7 +13,8 @@ class AppConst {
   /// Make sure you are in live server or test server by base url
   ///static String baseUrlApi = global.get(SPUtill.companyUrl);
   static dynamic baseUrlApi = SPUtill.getValue(SPUtill.companyUrl);
-  static String? loginUrl = "https://cnh99.online/tirupati_api";
+  static String? loginUrl = "https://tirupati.srkwebappinnovations.com";
+  static String? header = "5171a28f0ea95d2b2feb104fef8cc19d";
   static String? endPoint;
 
   static String? bariKoiApiKey;
@@ -45,7 +43,7 @@ class AppConst {
   static List<String> supportTicketsButton = [
     tr("open"),
     tr('close'),
-    tr('all')
+    tr('all'),
   ];
 }
 

@@ -1,22 +1,29 @@
 import 'dart:io';
 
 import 'package:crm_demo/custom_widgets/custom_dialog.dart';
-import 'package:crm_demo/screens/appFlow/home/crm_home_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/clients/model/company_list_model.dart';
-import 'package:crm_demo/utils/app_const.dart' show AppConst;
+import 'package:crm_demo/screens/appFlow/menu/projects/model/kyc_user_id_kyc_model.dart';
+import 'package:crm_demo/screens/appFlow/menu/projects/model/project_kyc_list_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../../../utils/nav_utail.dart';
-import '../crm_clinet_repository/client_repository.dart';
+import '../../projects/crm_project_repository/crm_project_repository.dart'
+    show CrmProjectRepository;
 
-class AddClientProvider extends ChangeNotifier {
-  AddClientProvider() {
-    getCompanyList();
+class KycDetailsProvider extends ChangeNotifier {
+  KYCData? kycData2;
+
+  KycDetailsProvider(KYCData? kycData) {
+    print('{kycData ${kycData?.kycid}');
+    kycData2 = kycData;
+    print('{kycData2 ${kycData2?.kycid}');
+    notifyListeners();
+    getKycByKycIdList();
   }
+
+  KYCUserIdKYCModel kYCUserIdKYCModel = KYCUserIdKYCModel();
 
   final clientNameController = TextEditingController();
   final clientPhoneNumberController = TextEditingController();
@@ -27,45 +34,14 @@ class AddClientProvider extends ChangeNotifier {
 
   File? imagePath;
   CompanyData? companyData;
-  CompanyListModel companyListModel = CompanyListModel();
 
-  Future addClient(BuildContext context, bool isUpdate, String userId) async {
-    if (companyData == null) {
-      Fluttertoast.showToast(msg: 'Select your Company');
-      return;
-    }
-
-    final data = {
-      "request": isUpdate ? "updateUser" : "createNewUser",
-      "header": AppConst.header,
-      "data":
-          isUpdate
-              ? {
-                'userid': int.parse(userId),
-                "conpany_id": int.parse(companyData?.companyId ?? '0'),
-                "user_name": clientNameController.text,
-                "email_id": clientEmailController.text,
-                "mobile": clientPhoneNumberController.text,
-                "password": clientPasswordController.text,
-                "address": clientAddressController.text,
-              }
-              : {
-                "conpany_id": int.parse(companyData?.companyId ?? '0'),
-                "user_name": clientNameController.text,
-                "email_id": clientEmailController.text,
-                "mobile": clientPhoneNumberController.text,
-                "password": clientPasswordController.text,
-                "address": clientAddressController.text,
-              },
-    };
-
-    final response = await CrmClientRepository.addClient(
-      data,
-      endPoints: isUpdate ? '/Welcome/updateUser' : '/Welcome/createNewUser',
+  Future getKycByKycIdList() async {
+    final response = await CrmProjectRepository.getKycByKycIdList(
+      kYCId: kycData2?.kycid ?? '',
     );
 
     if (response['status'] == true) {
-      NavUtil.pushAndRemoveUntil(context, const CrmHomeScreen());
+      kYCUserIdKYCModel = KYCUserIdKYCModel.fromJson(response);
       notifyListeners();
     }
   }
@@ -73,19 +49,6 @@ class AddClientProvider extends ChangeNotifier {
   selectCompany(CompanyData? value) {
     companyData = value;
     notifyListeners();
-  }
-
-  // isUpdateFun(bool value) {
-  //   isUpdate = value;
-  //   notifyListeners();
-  // }
-
-  Future getCompanyList() async {
-    final response = await CrmClientRepository.getCompanyList();
-    if (response['status'] == true) {
-      companyListModel = CompanyListModel.fromJson(response);
-      notifyListeners();
-    }
   }
 
   ///Pick image from Camera and Gallery

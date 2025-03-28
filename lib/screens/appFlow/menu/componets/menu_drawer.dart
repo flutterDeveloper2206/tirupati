@@ -1,4 +1,3 @@
-import 'package:crm_demo/screens/appFlow/menu/leave/leave_summary/leave_summary.dart';
 import 'package:crm_demo/screens/appFlow/menu/menu_provider.dart';
 import 'package:crm_demo/screens/appFlow/menu/my_account/my_account.dart';
 import 'package:crm_demo/utils/nav_utail.dart';
@@ -21,7 +20,9 @@ class MenuDrawer extends StatelessWidget {
       MenuDrawerModel(
         title: 'Home'.tr(),
         iconData: Icons.home,
-        onTap: () => NavUtil.navigateScreen(context, const LeaveSummary()),
+        onTap: () {
+          Navigator.pop(context);
+        } /*NavUtil.navigateScreen(context, const LeaveSummary())*/,
       ),
       MenuDrawerModel(
         title: 'Profile'.tr(),

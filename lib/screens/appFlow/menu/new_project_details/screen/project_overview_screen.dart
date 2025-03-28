@@ -1,35 +1,59 @@
+import 'package:crm_demo/screens/appFlow/menu/clients/client_details/client_details_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/project_overview_provider.dart';
-import 'package:crm_demo/screens/custom_widgets/custom_list_shimer.dart';
-import 'package:crm_demo/screens/custom_widgets/no_data_found_widget.dart';
+import 'package:crm_demo/screens/appFlow/menu/projects/model/kyc_user_id_kyc_model.dart'
+    show KYCUserIdKYCData;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProjectOverviewScreen extends StatelessWidget {
   final int projectId;
-  const ProjectOverviewScreen({super.key, required this.projectId});
+  final KYCUserIdKYCData kYCUserIdKYCData;
+  const ProjectOverviewScreen({
+    super.key,
+    required this.projectId,
+    required this.kYCUserIdKYCData,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ProjectOverViewProvider>(
       builder: (context, provider, _) {
         final projectOverView = provider.projectOverviewDetailsResponse?.data;
-        return SingleChildScrollView(
-          child:
-              provider.isLoading
-                  ? const CustomListShimer()
-                  : projectOverView != null
-                  ? ListView(
-                    children: [
-                      buildKYCItem("Name", Icons.person, "Mr Grge"),
-                      buildKYCItem("Gender", null, "Male"),
-                      buildKYCItem("Marital Status", null, "Single"),
-                      buildKYCItem("Father Name / Husband Name", null, "Gege"),
-                      buildKYCItem("Date of Birth", Icons.cake, "27-03-2025"),
-                      buildKYCItem("Age", Icons.cake, "0"),
-                      buildKYCItem("Email Id", null, "example@mail.com"),
-                    ],
-                  )
-                  : const NoDataFoundWidget(),
+        return ListView(
+          children: [
+            ProfileField(
+              icon: Icons.apartment,
+              label: "Company Name",
+              value: kYCUserIdKYCData.companyName ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.person,
+              label: "Name",
+              value: kYCUserIdKYCData.name ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.email,
+              label: "Email Id",
+              value: kYCUserIdKYCData.email ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.phone,
+              label: "Phone Number",
+              value: kYCUserIdKYCData.mobile ?? 'N/A',
+            ),
+            ProfileField(
+              icon: Icons.home,
+              label: "Address",
+              value: kYCUserIdKYCData.address ?? 'N/A',
+            ),
+            /*buildKYCItem("Name", Icons.person, "Mr Grge"),
+            buildKYCItem("Gender", null, "Male"),
+            buildKYCItem("Marital Status", null, "Single"),
+            buildKYCItem("Father Name / Husband Name", null, "Gege"),
+            buildKYCItem("Date of Birth", Icons.cake, "27-03-2025"),
+            buildKYCItem("Age", Icons.cake, "0"),
+            buildKYCItem("Email Id", null, "example@mail.com"),*/
+          ],
         );
       },
     );

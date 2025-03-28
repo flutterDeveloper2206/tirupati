@@ -1,4 +1,5 @@
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/discussioin_provider.dart';
+import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/kyc_details_provider.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/project_activity_provider.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/project_email_provider.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/project_file_provider.dart';
@@ -7,22 +8,30 @@ import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/proje
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/project_note_provider.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/project_overview_provider.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/provider/project_task_provider.dart';
-import 'package:crm_demo/screens/appFlow/menu/new_project_details/screen/project_email_list_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/screen/project_file_list_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/screen/project_milestone_list_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/screen/project_overview_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/screen/project_task_screen.dart';
+import 'package:crm_demo/screens/appFlow/menu/projects/model/kyc_user_id_kyc_model.dart';
+import 'package:crm_demo/screens/appFlow/menu/projects/model/project_kyc_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class NewProjectDetailsScreen extends StatelessWidget {
   final int projectId;
-  const NewProjectDetailsScreen({super.key, required this.projectId});
+  final KYCData? kycData;
+
+  const NewProjectDetailsScreen({
+    super.key,
+    required this.projectId,
+    this.kycData,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => KycDetailsProvider(kycData)),
         ChangeNotifierProvider(
           create: (_) => ProjectOverViewProvider(projectId),
         ),
@@ -42,7 +51,7 @@ class NewProjectDetailsScreen extends StatelessWidget {
         ),
       ],
       child: DefaultTabController(
-        length: 9,
+        length: 4,
         child: Scaffold(
           appBar: AppBar(
             title: const Text("KYC Details"),
@@ -67,7 +76,7 @@ class NewProjectDetailsScreen extends StatelessWidget {
                       "Document information",
                       style: TextStyle(fontSize: 16),
                     ),
-                    Text("Files", style: TextStyle(fontSize: 16)),
+                    // Text("Files", style: TextStyle(fontSize: 16)),
                     // Text("Discussion"),
                     // Text("Notes"),
                     // Text("Members"),
@@ -77,18 +86,40 @@ class NewProjectDetailsScreen extends StatelessWidget {
               ),
             ),
           ),
-          body: TabBarView(
-            children: [
-              ProjectOverviewScreen(projectId: projectId),
-              ProjectTaskScreen(projectId: projectId),
-              ProjectMilestoneScreen(projectId: projectId),
-              ProjectEmailScreen(projectId: projectId),
-              ProjectFileScreen(projectId: projectId),
-              // ProjectDiscussionScreen(projectId: projectId),
-              // ProjectNoteScreen(projectId: projectId),
-              // ProjectMemberListScreen(projectId: projectId),
-              // ProjectActivityScreen(projectId: projectId),
-            ],
+          body: Consumer<KycDetailsProvider>(
+            builder: (context, provider, _) {
+              return TabBarView(
+                children: [
+                  ProjectOverviewScreen(
+                    projectId: projectId,
+                    kYCUserIdKYCData:
+                        provider.kYCUserIdKYCModel.data != null
+                            ? provider.kYCUserIdKYCModel.data!.first
+                            : KYCUserIdKYCData(),
+                  ),
+                  ProjectTaskScreen(
+                    projectId: projectId,
+                    kYCUserIdKYCData:
+                        provider.kYCUserIdKYCModel.data != null
+                            ? provider.kYCUserIdKYCModel.data!.first
+                            : KYCUserIdKYCData(),
+                  ),
+                  ProjectMilestoneScreen(
+                    projectId: projectId,
+                    kYCUserIdKYCData:
+                        provider.kYCUserIdKYCModel.data != null
+                            ? provider.kYCUserIdKYCModel.data!.first
+                            : KYCUserIdKYCData(),
+                  ),
+                  // ProjectEmailScreen(projectId: projectId),
+                  ProjectFileScreen(projectId: projectId),
+                  // ProjectDiscussionScreen(projectId: projectId),
+                  // ProjectNoteScreen(projectId: projectId),
+                  // ProjectMemberListScreen(projectId: projectId),
+                  // ProjectActivityScreen(projectId: projectId),
+                ],
+              );
+            },
           ),
         ),
       ),

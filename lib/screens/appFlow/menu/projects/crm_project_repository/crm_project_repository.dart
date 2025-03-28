@@ -11,6 +11,7 @@ import 'package:crm_demo/screens/appFlow/menu/clients/model/client_list_model.da
 import 'package:crm_demo/screens/appFlow/menu/projects/model/project_dashboard_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/projects/model/project_list_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/task/model/task_status_model.dart';
+import 'package:crm_demo/utils/app_const.dart' show AppConst;
 import 'package:crm_demo/utils/shared_preferences.dart' show SPUtill;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -29,7 +30,7 @@ class CrmProjectRepository {
         "/Welcome/getUserList",
         data: {
           "request": "getUserList",
-          "header": "5171a28f0ea95d2b2feb104fef8cc19d",
+          "header": AppConst.header,
           "data": {
             "conpany_id": "all", //all,conpany_id
           },
@@ -82,10 +83,7 @@ class CrmProjectRepository {
       EasyLoading.show(status: 'loading...');
       final response = await ApiService.getDio()!.post(
         '/Welcome/getCompanyList',
-        data: {
-          "request": "getCompanyList",
-          "header": "5171a28f0ea95d2b2feb104fef8cc19d",
-        },
+        data: {"request": "getCompanyList", "header": AppConst.header},
       );
       EasyLoading.dismiss();
       if (kDebugMode) {
@@ -189,11 +187,11 @@ class CrmProjectRepository {
     try {
       EasyLoading.show(status: 'loading...');
       final response = await ApiService.getDio()!.post(
-        '/Welcome/getKycByUserid',
+        '/Welcome/getKycListByConpanyId',
         data: {
-          "request": "getKyc",
-          "header": "5171a28f0ea95d2b2feb104fef8cc19d",
-          "data": {/*"conpany_id": companyId,*/ "userid": userId},
+          "request": "getKycListByConpanyId",
+          "header": AppConst.header,
+          "data": {"conpany_id": companyId},
         },
       );
       EasyLoading.dismiss();
@@ -210,6 +208,38 @@ class CrmProjectRepository {
       EasyLoading.dismiss();
       Fluttertoast.showToast(
         msg: e.response?.data['message'] ?? 'Something went wrong',
+      );
+      return e.response?.data;
+    }
+  }
+
+  ///ListAdmin
+
+  static Future getKycByKycIdList({required String kYCId}) async {
+    try {
+      EasyLoading.show(status: 'loading...');
+      final response = await ApiService.getDio()!.post(
+        '/Welcome/getKycByKycId',
+        data: {
+          "request": "getKycByKycId",
+          "header": AppConst.header,
+          "data": {"kycid": kYCId},
+        },
+      );
+      EasyLoading.dismiss();
+      if (kDebugMode) {
+        print(response.data);
+      }
+      var obj = response.data;
+
+      return obj;
+    } on DioError catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+      EasyLoading.dismiss();
+      Fluttertoast.showToast(
+        msg: e.response?.data['msg'] ?? 'Something went wrong',
       );
       return e.response?.data;
     }

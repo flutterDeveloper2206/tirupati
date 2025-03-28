@@ -9,9 +9,47 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-class AddClientScreen extends StatelessWidget {
-  AddClientScreen({super.key});
+import '../../projects/model/admin_list_model.dart' show UserData;
+
+class AddClientScreen extends StatefulWidget {
+  final UserData? user;
+
+  AddClientScreen({super.key, this.user});
+
+  @override
+  State<AddClientScreen> createState() => _AddClientScreenState();
+}
+
+class _AddClientScreenState extends State<AddClientScreen> {
   final formKey = GlobalKey<FormState>();
+  /*
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Run after the first frame to prevent calling setState during build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = Provider.of<AddClientProvider>(context, listen: false);
+      provider.isUpdateFun(widget.user != null);
+
+      // Populate fields if user exists
+      if (widget.user != null) {
+        provider.clientNameController.text = widget.user?.userName ?? '';
+        provider.clientPhoneNumberController.text = widget.user?.mobile ?? '';
+        provider.clientEmailController.text = widget.user?.emailId ?? '';
+        provider.clientAddressController.text = widget.user?.address ?? '';
+
+        if (provider.companyListModel.data != null) {
+          for (var item in provider.companyListModel.data!) {
+            if (widget.user!.companyId == item.companyId) {
+              provider.selectCompany(item);
+            }
+          }
+        }
+      }
+    });
+  }*/
+
   @override
   Widget build(BuildContext context) {
     return NoInternetScreen(
@@ -19,6 +57,22 @@ class AddClientScreen extends StatelessWidget {
         create: (context) => AddClientProvider(),
         child: Consumer<AddClientProvider>(
           builder: (context, provider, _) {
+            if (widget.user != null) {
+              provider.clientNameController.text = widget.user?.userName ?? '';
+              provider.clientPhoneNumberController.text =
+                  widget.user?.mobile ?? '';
+              provider.clientEmailController.text = widget.user?.emailId ?? '';
+              provider.clientAddressController.text =
+                  widget.user?.address ?? '';
+
+              if (provider.companyListModel.data != null) {
+                for (var item in provider.companyListModel.data!) {
+                  if (widget.user!.companyId == item.companyId) {
+                    provider.selectCompany(item);
+                  }
+                }
+              }
+            }
             return Scaffold(
               resizeToAvoidBottomInset: true,
               backgroundColor: const Color(0xffF5F6FA),
@@ -26,7 +80,7 @@ class AddClientScreen extends StatelessWidget {
                 elevation: 0,
                 title:
                     Text(
-                      "add_client",
+                      widget.user != null ? "Update Client" : "add_client",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.sp,
@@ -41,69 +95,6 @@ class AddClientScreen extends StatelessWidget {
                     horizontal: 16.w,
                   ),
                   children: [
-                    /*InkWell(
-                    onTap: () => provider.pickImage(context),
-                    child: Center(
-                      child: Stack(
-                        children: [
-                          Container(
-                            height: 110,
-                            width: 110,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                    color: const Color(0xFFE4E4E4),
-                                    width: 8)),
-                            child: provider.imagePath == null
-                                ? const Icon(
-                                    CupertinoIcons.person_solid,
-                                    color: Colors.grey,
-                                    size: 60,
-                                  )
-                                : ClipOval(
-                                    child: Image.file(
-                                    provider.imagePath!,
-                                    height: 100,
-                                    width: 100,
-                                    fit: BoxFit.cover,
-                                  )),
-                          ),
-                          provider.imagePath == null
-                              ? Positioned(
-                                  bottom: 6,
-                                  right: 6,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: AppColors.colorPrimary),
-                                    child: const Icon(
-                                      size: 18.0,
-                                      Icons.add,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                )
-                              : Positioned(
-                                  bottom: 6,
-                                  right: 6,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: AppColors.colorPrimary),
-                                    child: const Icon(
-                                      size: 18.0,
-                                      Icons.edit,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                )
-                        ],
-                      ),
-                    ),
-                  ),*/
                     const LavelText(text: "Company * "),
                     SizedBox(height: 10.h),
                     CustomDropdown<CompanyData>(
@@ -169,7 +160,11 @@ class AddClientScreen extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
-                          await provider.addClient(context);
+                          await provider.addClient(
+                            context,
+                            widget.user != null,
+                            widget.user?.userid ?? '',
+                          );
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -181,7 +176,9 @@ class AddClientScreen extends StatelessWidget {
                       ),
                       child:
                           Text(
-                            "Add Clients",
+                            widget.user != null
+                                ? "Update Client"
+                                : "Add Clients",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16.sp,

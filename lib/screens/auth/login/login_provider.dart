@@ -1,19 +1,18 @@
 import 'dart:io';
-import 'package:crm_demo/screens/appFlow/home/crm_home_screen.dart' show CrmHomeScreen;
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:crm_demo/api_service/api_body.dart';
 import 'package:crm_demo/data/model/auth_response/response_login.dart';
 import 'package:crm_demo/data/server/respository/auth_repository/auth_repository.dart';
 import 'package:crm_demo/data/server/respository/repository.dart';
-import 'package:crm_demo/main.dart';
-import 'package:crm_demo/screens/appFlow/navigation_bar/buttom_navigation_bar.dart';
+import 'package:crm_demo/screens/appFlow/home/crm_home_screen.dart'
+    show CrmHomeScreen;
 import 'package:crm_demo/screens/appFlow/permission/app_permission_page.dart';
-import 'package:crm_demo/utils/app_const.dart';
+import 'package:crm_demo/utils/app_const.dart' show AppConst;
 import 'package:crm_demo/utils/nav_utail.dart';
 import 'package:crm_demo/utils/shared_preferences.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart' as loc;
 
 class LoginProvider extends ChangeNotifier {
@@ -65,9 +64,7 @@ class LoginProvider extends ChangeNotifier {
                   prominentDisclosure,
                   style: const TextStyle(color: Colors.black54),
                 ),
-                const SizedBox(
-                  height: 36.0,
-                ),
+                const SizedBox(height: 36.0),
                 Text(denyMessage),
               ],
             ),
@@ -115,12 +112,15 @@ class LoginProvider extends ChangeNotifier {
     var deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) {
       var iosDeviceInfo = await deviceInfo.iosInfo;
-      deviceInfoModel = '${iosDeviceInfo.name}-${iosDeviceInfo.model}-${iosDeviceInfo.systemVersion}';
-      final result = '${iosDeviceInfo.name}-${iosDeviceInfo.model}-${iosDeviceInfo.identifierForVendor}';
+      deviceInfoModel =
+          '${iosDeviceInfo.name}-${iosDeviceInfo.model}-${iosDeviceInfo.systemVersion}';
+      final result =
+          '${iosDeviceInfo.name}-${iosDeviceInfo.model}-${iosDeviceInfo.identifierForVendor}';
       SPUtill.setValue(SPUtill.keyIosDeviceToken, result);
     } else {
       final androidDeviceInfo = await deviceInfo.androidInfo;
-      deviceInfoModel = '${androidDeviceInfo.device},${androidDeviceInfo.model},${androidDeviceInfo.brand}';
+      deviceInfoModel =
+          '${androidDeviceInfo.device},${androidDeviceInfo.model},${androidDeviceInfo.brand}';
       final result =
           '${androidDeviceInfo.brand}-${androidDeviceInfo.device}-${androidDeviceInfo.id}';
       SPUtill.setValue(SPUtill.keyAndroidDeviceToken, result);
@@ -128,22 +128,36 @@ class LoginProvider extends ChangeNotifier {
   }
 
   Future setDataSharePreferences(ResponseLogin? responseLogin) async {
-    if(responseLogin?.data != null){
-    // SPUtill.setValue(SPUtill.keyAuthToken, responseLogin?.data?.token);
-    SPUtill.setIntValue(SPUtill.keyUserId, int.parse(responseLogin?.data?.first.userId ?? ''));
-    SPUtill.setValue(SPUtill.address, responseLogin?.data?.first.address ?? '');
-    SPUtill.setValue(SPUtill.userName, (responseLogin?.data?.first.userName ?? ''));
-    SPUtill.setValue(SPUtill.userName, (responseLogin?.data?.first.userType ?? ''));
-    SPUtill.setValue(SPUtill.mobileNo, (responseLogin?.data?.first.mobile ?? ''));
-    SPUtill.setValue(SPUtill.companyName, (responseLogin?.data?.first.companyName ?? ''));
-    // SPUtill.setValue(SPUtill.keyProfileImage, responseLogin?.data?.avatar);
-    // SPUtill.setValue(SPUtill.keyName, responseLogin?.data?.name);
-    // SPUtill.setValue(SPUtill.companyUrl, responseLogin?.data?.apiUrl);
-    // SPUtill.setBoolValue(SPUtill.keyIsAdmin, responseLogin?.data?.isAdmin);
-    // SPUtill.setBoolValue(SPUtill.keyIsHr, responseLogin?.data?.isHr);
-    // SPUtill.setBoolValue(SPUtill.keyIsFaceRegister, responseLogin?.data?.isFaceRegistered);
-    // String? url = await SPUtill.getValue(SPUtill.companyUrl);
-    // global.set(SPUtill.companyUrl, url);
+    if (responseLogin?.data != null) {
+      // SPUtill.setValue(SPUtill.keyAuthToken, responseLogin?.data?.token);
+      SPUtill.setIntValue(
+        SPUtill.keyUserId,
+        int.parse(responseLogin?.data?.first.userId ?? ''),
+      );
+      SPUtill.setValue(
+        SPUtill.address,
+        responseLogin?.data?.first.address ?? '',
+      );
+      SPUtill.setValue(
+        SPUtill.emailId,
+        responseLogin?.data?.first.emailId ?? '',
+      );
+      SPUtill.setValue(
+        SPUtill.userName,
+        (responseLogin?.data?.first.userName ?? ''),
+      );
+      SPUtill.setValue(
+        SPUtill.userType,
+        (responseLogin?.data?.first.userType ?? ''),
+      );
+      SPUtill.setValue(
+        SPUtill.mobileNo,
+        (responseLogin?.data?.first.mobile ?? ''),
+      );
+      SPUtill.setValue(
+        SPUtill.companyName,
+        (responseLogin?.data?.first.companyName ?? ''),
+      );
     }
     getBaseSetting();
   }
@@ -155,24 +169,26 @@ class LoginProvider extends ChangeNotifier {
       mobile: emailTextController.text,
       password: passwordTextController.text,
       request: 'userLogin',
-      header: '5171a28f0ea95d2b2feb104fef8cc19d',
+      header: AppConst.header,
       /*mobile: emailTextController.text,
         // email: emailTextController.text,
         password: passwordTextController.text,
         deviceId: Platform.isAndroid ? deviceName : iosDeviceName,
-        deviceInfo: deviceInfoModel*/);
+        deviceInfo: deviceInfoModel*/
+    );
     var apiResponse = await AuthRepository.getLogin(bodyLogin);
     if (apiResponse.result == true) {
       setDataSharePreferences(apiResponse.data);
 
       Fluttertoast.showToast(
-          msg: apiResponse.message ?? "",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 12.0);
+        msg: apiResponse.message ?? "",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 12.0,
+      );
       resetTextField();
       if (Platform.isAndroid) {
         checkGps(context);
@@ -186,7 +202,8 @@ class LoginProvider extends ChangeNotifier {
         // password = apiResponse.error?.laravelValidationError?.password;
         error = apiResponse.message;
         notifyListeners();
-      } else if (apiResponse.httpCode == 400/*&&apiResponse.error?.laravelValidationError.toString() != '404'*/) {
+      } else if (apiResponse.httpCode ==
+          400 /*&&apiResponse.error?.laravelValidationError.toString() != '404'*/ ) {
         // email = apiResponse.error?.laravelValidationError?.email;
         // password = apiResponse.error?.laravelValidationError?.password;
         error = apiResponse.message;

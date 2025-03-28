@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+
 import 'package:crm_demo/custom_widgets/custom_dialog.dart';
 import 'package:crm_demo/data/model/response_profile_image.dart';
 import 'package:crm_demo/data/server/respository/profile_repository/profile_repository.dart';
 import 'package:crm_demo/utils/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class OfficeTabProvider extends ChangeNotifier {
@@ -12,6 +13,7 @@ class OfficeTabProvider extends ChangeNotifier {
   File? imagePath;
 
   OfficeTabProvider() {
+    getUserDataFromDatabase();
     getUserData();
   }
 
@@ -24,10 +26,11 @@ class OfficeTabProvider extends ChangeNotifier {
           onCameraClick: () async {
             final ImagePicker picker = ImagePicker();
             final XFile? image = await picker.pickImage(
-                source: ImageSource.camera,
-                maxHeight: 300,
-                maxWidth: 300,
-                imageQuality: 90);
+              source: ImageSource.camera,
+              maxHeight: 300,
+              maxWidth: 300,
+              imageQuality: 90,
+            );
             imagePath = File(image!.path);
             updateProfileImage(imagePath);
             notifyListeners();
@@ -38,10 +41,11 @@ class OfficeTabProvider extends ChangeNotifier {
           onGalleryClick: () async {
             final ImagePicker pickerGallery = ImagePicker();
             final XFile? imageGallery = await pickerGallery.pickImage(
-                source: ImageSource.gallery,
-                maxHeight: 300,
-                maxWidth: 300,
-                imageQuality: 90);
+              source: ImageSource.gallery,
+              maxHeight: 300,
+              maxWidth: 300,
+              imageQuality: 90,
+            );
             imagePath = File(imageGallery!.path);
             updateProfileImage(imagePath);
             if (kDebugMode) {
@@ -52,6 +56,22 @@ class OfficeTabProvider extends ChangeNotifier {
         );
       },
     );
+    notifyListeners();
+  }
+
+  var name = '';
+  var mobile = '';
+  var userType = '';
+  var address = '';
+  var companyName = '';
+  var emailId = '';
+  getUserDataFromDatabase() async {
+    name = (await SPUtill.getValue(SPUtill.userName)) ?? 'N/A';
+    userType = (await SPUtill.getValue(SPUtill.userType)) ?? 'N/A';
+    mobile = (await SPUtill.getValue(SPUtill.mobileNo)) ?? 'N/A';
+    address = (await SPUtill.getValue(SPUtill.address)) ?? 'N/A';
+    companyName = (await SPUtill.getValue(SPUtill.companyName)) ?? 'N/A';
+    emailId = (await SPUtill.getValue(SPUtill.emailId)) ?? 'N/A';
     notifyListeners();
   }
 

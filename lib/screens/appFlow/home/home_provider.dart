@@ -1,9 +1,3 @@
-import 'package:custom_timer/custom_timer.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:crm_demo/api_service/api_body.dart';
 import 'package:crm_demo/data/model/event_holiday_model/event_holiday_model.dart'
     as holiday;
@@ -20,6 +14,11 @@ import 'package:crm_demo/screens/appFlow/menu/visit/visit_screen.dart';
 import 'package:crm_demo/utils/app_const.dart';
 import 'package:crm_demo/utils/nav_utail.dart';
 import 'package:crm_demo/utils/shared_preferences.dart';
+import 'package:custom_timer/custom_timer.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../data/model/home/crm_home_model.dart';
 import '../../../data/model/home/statics_model.dart';
@@ -27,6 +26,7 @@ import 'attendeance/attendance.dart';
 
 class HomeProvider extends ChangeNotifier {
   String? userName;
+  String? userType;
   int current = 0;
   bool? isCheckIn;
   String? checkStatus;
@@ -57,10 +57,8 @@ class HomeProvider extends ChangeNotifier {
   ResponseMeetingList? appointmentsModel;
   List<Item>? appointmentsItems;
 
-
   ///crmHomeData
-   CrmHomeModel? crmResponseData;
-
+  CrmHomeModel? crmResponseData;
 
   HomeProvider(BuildContext context) {
     currentDate();
@@ -70,7 +68,7 @@ class HomeProvider extends ChangeNotifier {
     getUserData();
   }
 
-  currentDate() async{
+  currentDate() async {
     DateTime now = DateTime.now();
     currentDateData = DateFormat('y-MM-d').format(now);
     profileImage = await SPUtill.getValue(SPUtill.keyProfileImage);
@@ -86,10 +84,14 @@ class HomeProvider extends ChangeNotifier {
         return NavUtil.navigateScreen(context, const VisitScreen());
       case 'birthday':
         return Fluttertoast.showToast(
-            msg: 'Under Development', toastLength: Toast.LENGTH_SHORT);
+          msg: 'Under Development',
+          toastLength: Toast.LENGTH_SHORT,
+        );
       case 'task':
         return Fluttertoast.showToast(
-            msg: 'Under Development', toastLength: Toast.LENGTH_SHORT);
+          msg: 'Under Development',
+          toastLength: Toast.LENGTH_SHORT,
+        );
       case 'support_ticket':
         return NavUtil.navigateScreen(context, const SupportScreen());
       default:
@@ -110,7 +112,7 @@ class HomeProvider extends ChangeNotifier {
       AppConst.endPoint = endPointKey;
       AppConst.bariKoiApiKey = barikoiApiKey;
 
-       fcmTopic = apiResponse.data?.data?.fcmTopic;
+      fcmTopic = apiResponse.data?.data?.fcmTopic;
 
       /// initial Firebase for topic notification
       await FirebaseMessaging.instance.subscribeToTopic('$fcmTopic');
@@ -125,13 +127,14 @@ class HomeProvider extends ChangeNotifier {
         minutes = int.parse(parts[1].trim());
         seconds = int.parse(parts[2].trim());
         NavUtil.navigateScreen(
-            context,
-            BreakTime(
-              diffTimeHome: diffTime,
-              hourHome: hour,
-              minutesHome: minutes,
-              secondsHome: seconds,
-            ));
+          context,
+          BreakTime(
+            diffTimeHome: diffTime,
+            hourHome: hour,
+            minutesHome: minutes,
+            secondsHome: seconds,
+          ),
+        );
       }
       notifyListeners();
     }
@@ -140,24 +143,21 @@ class HomeProvider extends ChangeNotifier {
   void getAttendanceMethod(context) {
     switch (attendanceMethod) {
       case 'FR':
-    
         break;
       case 'QR':
         Fluttertoast.showToast(msg: 'QR attendance under premium policy');
         break;
       case 'N':
         NavUtil.navigateScreen(
-            context,
-            const Attendance(
-              navigationMenu: false,
-            ));
+          context,
+          const Attendance(navigationMenu: false),
+        );
         break;
       default:
         NavUtil.navigateScreen(
-            context,
-            const Attendance(
-              navigationMenu: false,
-            ));
+          context,
+          const Attendance(navigationMenu: false),
+        );
         break;
     }
   }
@@ -168,10 +168,12 @@ class HomeProvider extends ChangeNotifier {
   }
 
   void getUserData() async {
-    userName = await SPUtill.getValue(SPUtill.keyName);
+    userName = await SPUtill.getValue(SPUtill.userName);
+    userType = await SPUtill.getValue(SPUtill.userType);
+    print('userName --> $userName');
+    print('userType --> $userType');
     notifyListeners();
   }
-
 
   checkInCheckOutStatus(context) async {
     var userId = await SPUtill.getIntValue(SPUtill.keyUserId);
@@ -210,19 +212,15 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
-///get crm home screen data
+  ///get crm home screen data
   getCrmHomeData() async {
     final response = await HomeRepository.getCrmHomeData();
     if (response.httpCode == 200) {
-    crmResponseData = response.data;
+      crmResponseData = response.data;
       notifyListeners();
     }
     notifyListeners();
   }
-
-
-
 
   /// Get all statics data from here
   getStaticsList() async {

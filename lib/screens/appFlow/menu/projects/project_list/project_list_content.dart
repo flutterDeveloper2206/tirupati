@@ -29,6 +29,7 @@ class ProjectListContent extends StatelessWidget {
                   MaterialPageRoute(
                     builder:
                         (context) => NewProjectDetailsScreen(
+                          kycData: user,
                           projectId: int.parse(user.userid ?? ''),
                         ),
                   ),

@@ -1,8 +1,7 @@
+import 'package:crm_demo/screens/appFlow/home/crm_home_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/my_account/myaccount_provider.dart';
 import 'package:crm_demo/screens/appFlow/menu/my_account/tab/office_tab/office_tab.dart';
-import 'package:crm_demo/screens/appFlow/menu/my_account/tab/personal_tab/personal_tab.dart';
 import 'package:crm_demo/screens/appFlow/navigation_bar/bottom_nav_controller.dart';
-import 'package:crm_demo/screens/appFlow/navigation_bar/buttom_navigation_bar.dart';
 import 'package:crm_demo/utils/nav_utail.dart';
 import 'package:crm_demo/utils/res.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -27,12 +26,12 @@ class MyAccount extends StatelessWidget {
             onWillPop:
                 () => NavUtil.replaceScreen(
                   context,
-                  ButtomNavigationBar(
-                    bottomNavigationIndex: controller.currentScreenIndex,
+                  CrmHomeScreen(
+                    /*bottomNavigationIndex: controller.currentScreenIndex,*/
                   ),
                 ),
             child: DefaultTabController(
-              length: 2,
+              length: 1,
               initialIndex: tabIndex ?? 0,
               child: Scaffold(
                 backgroundColor: AppColors.backgroundColor,
@@ -56,10 +55,10 @@ class MyAccount extends StatelessWidget {
                         tr("official"),
                         style: const TextStyle(fontFamily: 'cairo'),
                       ),
-                      Text(
+                      /* Text(
                         tr("personal"),
                         style: const TextStyle(fontFamily: 'cairo'),
-                      ),
+                      ),*/
                       // Text(
                       //   tr("financial"),
                       //   style: const TextStyle(fontFamily: 'cairo'),
@@ -91,10 +90,10 @@ class MyAccount extends StatelessWidget {
                       officialInfo:
                           context.watch<MyAccountProvider>().officialInfo,
                     ),
-                    PersonalTab(
+                    /* PersonalTab(
                       personalInfo:
                           context.watch<MyAccountProvider>().personalInfo,
-                    ),
+                    ),*/
                     // FinancialTab(financialInfo: context.watch<MyAccountProvider>().financialInfo,),
                     // EmergencyTeb(emergencyInfo: context.watch<MyAccountProvider>().emergencyInfo,),
                     // const AppreciateTab(),
