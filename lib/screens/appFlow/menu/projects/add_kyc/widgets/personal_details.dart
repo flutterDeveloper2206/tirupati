@@ -64,6 +64,24 @@ class PersonalDetails extends StatelessWidget {
         ),
 
         SizedBox(height: 16.h),
+        InkWell(
+          onTap: () async {
+            DateTime? pickedDate = await provider.selectDate(
+              context,
+              provider.birthDate,
+            );
+            if (pickedDate != null) {
+              provider.updateBirthDate(pickedDate);
+            }
+          },
+          child: AddClientTextField(
+            hintText: "Date of Birth".tr(),
+            enabled: false,
+            textController: provider.dateOfBirthController,
+          ),
+        ),
+
+        SizedBox(height: 16.h),
         AddClientTextField(
           hintText: "Age".tr(),
           textController: provider.ageController,

@@ -1,3 +1,4 @@
+import 'package:crm_demo/screens/appFlow/menu/clients/model/company_list_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/projects/add_kyc/add_kyc_provider.dart';
 import 'package:crm_demo/screens/appFlow/menu/sales/product/content/custom_dropdown.dart';
 import 'package:crm_demo/screens/custom_widgets/add_client_textfield.dart';
@@ -53,9 +54,20 @@ class ProfessionalDetails extends StatelessWidget {
           itemLabelBuilder: (Education value) => value.educationName ?? '',
         ),
 
+        SizedBox(height: 10.h),
+        CustomDropdown<CompanyData>(
+          value: provider.companyData,
+          labelText: 'Select Company ',
+          items: provider.companyList ?? [],
+          onChanged: (CompanyData? newValue) {
+            provider.selectCompany(newValue!);
+          },
+          itemLabelBuilder: (CompanyData value) => value.companyName ?? '',
+        ),
+
         SizedBox(height: 16.h),
         AddClientTextField(
-          hintText: "Company Name".tr(),
+          hintText: "New Company Name".tr(),
           textController: provider.companyNameController,
         ),
 
@@ -72,15 +84,55 @@ class ProfessionalDetails extends StatelessWidget {
         ),
 
         SizedBox(height: 16.h),
-        AddClientTextField(
-          hintText: "Date of Joi".tr(),
-          textController: provider.alternatePhoneController,
+        InkWell(
+          onTap: () async {
+            DateTime? pickedDate = await provider.selectDate(
+              context,
+              provider.joiningDate,
+            );
+            if (pickedDate != null) {
+              provider.updateJoiningDate(pickedDate);
+            }
+          },
+          child: AddClientTextField(
+            hintText: "Date of Joining".tr(),
+            enabled: false,
+            textController: provider.dateOfJoiningController,
+          ),
+        ),
+
+        SizedBox(height: 16.h),
+        InkWell(
+          onTap: () async {
+            DateTime? pickedDate = await provider.selectDate(
+              context,
+              provider.exitDate,
+            );
+            if (pickedDate != null) {
+              provider.updateExitDate(pickedDate);
+            }
+          },
+          child: AddClientTextField(
+            hintText: "Date of Exit".tr(),
+            enabled: false,
+            textController: provider.dateOfExitController,
+          ),
         ),
 
         SizedBox(height: 16.h),
         AddClientTextField(
-          hintText: "Date of Exit".tr(),
-          textController: provider.addressController,
+          hintText: "Aadhar card Number".tr(),
+          keyboardType: TextInputType.phone,
+          validatorFun: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please enter Aadhar Card Number";
+            }
+            if (!RegExp(r"^[2-9]{1}[0-9]{11}$").hasMatch(value)) {
+              return "Enter a valid 12-digit Aadhar Number";
+            }
+            return null;
+          },
+          textController: provider.aadharcardController,
         ),
 
         SizedBox(height: 16.h),
@@ -91,10 +143,26 @@ class ProfessionalDetails extends StatelessWidget {
 
         SizedBox(height: 16.h),
         AddClientTextField(
-          hintText: "Pan card name".tr(),
+          hintText: "Pan card Number".tr(),
+          validatorFun: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please enter PAN Card Number";
+            }
+            if (!RegExp(r"^[A-Z]{5}[0-9]{4}[A-Z]$").hasMatch(value)) {
+              return "Enter a valid PAN Number (e.g., ABCDE1234F)";
+            }
+            return null;
+          },
           textController: provider.panNameController,
         ),
 
+        /*
+
+        SizedBox(height: 16.h),
+        AddClientTextField(
+          hintText: "Pan card name".tr(),
+          textController: provider.panNameController,
+        ),*/
         SizedBox(height: 16.h),
         AddClientTextField(
           hintText: "UAN Name".tr(),

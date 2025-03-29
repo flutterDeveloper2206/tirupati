@@ -12,6 +12,7 @@ import 'package:crm_demo/screens/appFlow/menu/new_project_details/screen/project
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/screen/project_milestone_list_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/screen/project_overview_screen.dart';
 import 'package:crm_demo/screens/appFlow/menu/new_project_details/screen/project_task_screen.dart';
+import 'package:crm_demo/screens/appFlow/menu/projects/add_kyc/add_kyc_from.dart';
 import 'package:crm_demo/screens/appFlow/menu/projects/model/kyc_user_id_kyc_model.dart';
 import 'package:crm_demo/screens/appFlow/menu/projects/model/project_kyc_list_model.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,20 @@ class NewProjectDetailsScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: const Text("KYC Details"),
+            actions: [
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AddKycFrom(kycData: kycData),
+                    ),
+                  );
+                },
+                child: Icon(Icons.edit_calendar, color: Colors.black, size: 28),
+              ),
+              SizedBox(width: 20),
+            ],
             bottom: const PreferredSize(
               preferredSize: Size(double.infinity, 24),
               child: Align(

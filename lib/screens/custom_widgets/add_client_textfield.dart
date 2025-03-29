@@ -7,6 +7,7 @@ class AddClientTextField extends StatelessWidget {
     Key? key,
     this.hintText,
     this.maxLine,
+    this.enabled,
     this.keyboardType,
     this.validatorFun,
     this.textController,
@@ -15,6 +16,7 @@ class AddClientTextField extends StatelessWidget {
   final TextEditingController? textController;
   final String? Function(String?)? validatorFun;
   final int? maxLine;
+  final bool? enabled;
   final TextInputType? keyboardType;
 
   @override
@@ -29,6 +31,7 @@ class AddClientTextField extends StatelessWidget {
       child: TextFormField(
         controller: textController,
         maxLines: maxLine ?? 1,
+        enabled: enabled ?? true,
         cursorColor: const Color(0xff5B58FF),
         keyboardType: keyboardType ?? TextInputType.text,
         decoration: InputDecoration(

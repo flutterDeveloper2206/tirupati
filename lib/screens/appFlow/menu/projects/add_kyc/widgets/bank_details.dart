@@ -35,6 +35,7 @@ class BankDetails extends StatelessWidget {
 
         AddClientTextField(
           hintText: "Account Number *".tr(),
+          keyboardType: TextInputType.phone,
           textController: provider.accountNumberController,
         ),
 

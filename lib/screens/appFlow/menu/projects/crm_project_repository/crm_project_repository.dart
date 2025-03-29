@@ -78,39 +78,25 @@ class CrmProjectRepository {
   }
 
   ///projectDashboardResponse
-  static Future addKycForm({var body}) async {
+  static Future addKycForm({var body, required String endPoints}) async {
     try {
-      var response = await ApiService.getDio()!.post(
-        "/Welcome/addKyc",
-        data: body,
-      );
+      var response = await ApiService.getDio()!.post(endPoints, data: body);
       if (response.statusCode == 200) {
         if (kDebugMode) {
           print("add kyc data......${response.data}");
         }
-        var obj = projectDashboardModelFromJson(response.toString());
-        return ApiResponse(
-          httpCode: response.statusCode,
-          result: obj.result,
-          message: obj.message,
-          data: obj,
-        );
+
+        return response.data;
       } else {
-        var obj = projectDashboardModelFromJson(response.toString());
-        return ApiResponse(
-          httpCode: response.statusCode,
-          result: obj.result,
-          message: obj.message,
-          data: obj,
-        );
+        return response.data;
       }
     } on DioException catch (e) {
       if (e.type == DioExceptionType.badResponse) {
         var obj = projectDashboardModelFromJson(e.response.toString());
         return ApiResponse(
           httpCode: e.response!.statusCode,
-          result: e.response!.data["result"],
-          message: e.response!.data["message"],
+          result: e.response!.data["status"],
+          message: e.response!.data["msg"],
           error: obj,
         );
       } else {

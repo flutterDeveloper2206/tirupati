@@ -2,7 +2,6 @@ import 'package:crm_demo/screens/appFlow/menu/clients/model/company_list_model.d
 import 'package:crm_demo/screens/appFlow/menu/projects/project_list/project_list_content.dart';
 import 'package:crm_demo/screens/appFlow/menu/projects/project_list/project_list_provider.dart';
 import 'package:crm_demo/screens/appFlow/menu/sales/product/content/custom_dropdown.dart';
-import 'package:crm_demo/screens/custom_widgets/custom_title_appbar.dart';
 import 'package:crm_demo/screens/custom_widgets/label_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,7 +23,32 @@ class ProjectListScreen extends StatelessWidget {
               backgroundColor: const Color(0xffF5F6FA),
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(56.h),
-                child: const CustomTitleAppBar(title: "KYC List"),
+                child: AppBar(
+                  elevation: 0,
+                  backgroundColor: Colors.redAccent.shade200,
+                  leading: InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Icon(Icons.arrow_back, color: Colors.black),
+                  ),
+                  title: Text(
+                    "Kyc List",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  actions: [
+                    Icon(
+                      Icons.edit_calendar_outlined,
+                      color: Colors.black,
+                      size: 24,
+                    ),
+                    SizedBox(width: 20),
+                  ],
+                ),
               ),
               body: Padding(
                 padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 16.w),

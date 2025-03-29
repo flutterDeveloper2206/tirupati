@@ -696,7 +696,13 @@ class _CrmHomeScreenState extends State<CrmHomeScreen>
                               count:
                                   "${provider.crmResponseData?.data?.projectCount?.count ?? 0}",
                               onTap: () {
-                                if (provider.userType == 'super_admin') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const ProjectListScreen(),
+                                  ),
+                                );
+                                /* if (provider.userType == 'super_admin') {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -710,7 +716,7 @@ class _CrmHomeScreenState extends State<CrmHomeScreen>
                                       builder: (_) => const AddKycFrom(),
                                     ),
                                   );
-                                }
+                                }*/
                               },
                             ),
 
